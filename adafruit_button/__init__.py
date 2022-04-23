@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`adafruit_button.button`
+`adafruit_button`
 ================================================================================
 
 UI Buttons for displayio
