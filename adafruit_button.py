@@ -27,7 +27,7 @@ from adafruit_display_text.label import Label
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_shapes.roundrect import RoundRect
 
-__version__ = "0.0.0-auto.0"
+__version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Display_Button.git"
 
 
