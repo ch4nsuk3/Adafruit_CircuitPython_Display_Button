@@ -33,3 +33,12 @@ A soundboard made with buttons
 .. literalinclude:: ../examples/display_button_soundboard.py
     :caption: examples/display_button_soundboard.py
     :linenos:
+
+Sprite Button
+-------------
+
+Custom sprite button
+
+.. literalinclude:: ../examples/display_button_spritebutton_simpletest.py
+    :caption: examples/display_button_spritebutton_simpletest.py
+    :linenos:

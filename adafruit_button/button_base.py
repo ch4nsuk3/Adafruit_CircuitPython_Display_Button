@@ -40,9 +40,11 @@ class ButtonBase(Group):
     :param y: The y position of the button.
     :param width: The width of the button in tiles.
     :param height: The height of the button in tiles.
+    :param name: A name, or miscellaneous string that is stored on the button.
     :param label: The text that appears inside the button. Defaults to not displaying the label.
     :param label_font: The button label font.
     :param label_color: The color of the button label text. Defaults to 0x0.
+    :param selected_label: Text that appears when selected
     """
 
     def __init__(

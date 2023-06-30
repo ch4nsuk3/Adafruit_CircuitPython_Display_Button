@@ -32,11 +32,14 @@ class SpriteButton(ButtonBase):
     :param y: The y position of the button.
     :param width: The width of the button in tiles.
     :param height: The height of the button in tiles.
+    :param name: A name, or miscellaneous string that is stored on the button.
     :param label: The text that appears inside the button. Defaults to not displaying the label.
     :param label_font: The button label font.
     :param label_color: The color of the button label text. Defaults to 0x0.
+    :param selected_label: Text that appears when selected
     :param string bmp_path: The path of the 3x3 spritesheet Bitmap file
     :param string selected_bmp_path: The path of the 3x3 spritesheet Bitmap file to use when pressed
+    :param int or tuple transparent_index: Index(s) that will be made transparent on the Palette
     """
 
     def __init__(
@@ -82,7 +85,6 @@ class SpriteButton(ButtonBase):
                 elif isinstance(transparent_index, int):
                     self._selected_bmp_palette.make_transparent(0)
 
-        print((width // (self._bmp.width // 3), height // (self._bmp.height // 3)))
         self._btn_tilegrid = inflate_tilegrid(
             bmp_obj=self._bmp,
             bmp_palette=self._bmp_palette,
@@ -94,7 +96,6 @@ class SpriteButton(ButtonBase):
         )
         self.append(self._btn_tilegrid)
 
-        print("setting label")
         self.label = label
 
     @property
