@@ -80,7 +80,6 @@ class ButtonBase(Group):
 
     @label.setter
     def label(self, newtext):
-
         if self._label and self and (self[-1] == self._label):
             self.pop()
 
