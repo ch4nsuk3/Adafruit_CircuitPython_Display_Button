@@ -58,6 +58,9 @@ class SpriteButton(ButtonBase):
         selected_bmp_path=None,
         transparent_index=None
     ):
+        if bmp_path is None:
+            raise ValueError("Please supply bmp_path. It cannot be None.")
+
         super().__init__(
             x=x,
             y=y,
