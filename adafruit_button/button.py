@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 """
-`adafruit_button`
+`adafruit_button.button`
 ================================================================================
 
 UI Buttons for displayio
@@ -22,24 +22,15 @@ Implementation Notes
 """
 
 from micropython import const
-import displayio
-from adafruit_display_text.label import Label
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_shapes.roundrect import RoundRect
+from adafruit_button.button_base import ButtonBase, _check_color
 
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Display_Button.git"
 
 
-def _check_color(color):
-    # if a tuple is supplied, convert it to a RGB number
-    if isinstance(color, tuple):
-        r, g, b = color
-        return int((r << 16) + (g << 8) + (b & 0xFF))
-    return color
-
-
-class Button(displayio.Group):
+class Button(ButtonBase):
     # pylint: disable=too-many-instance-attributes, too-many-locals
     """Helper class for creating UI buttons for ``displayio``.
 
@@ -141,26 +132,27 @@ class Button(displayio.Group):
         selected_outline=None,
         selected_label=None
     ):
-        super().__init__(x=x, y=y)
-        self.x = x
-        self.y = y
-        self._width = width
-        self._height = height
-        self._font = label_font
-        self._selected = False
-        self.name = name
-        self._label = label
+        super().__init__(
+            x=x,
+            y=y,
+            width=width,
+            height=height,
+            name=name,
+            label=label,
+            label_font=label_font,
+            label_color=label_color,
+            selected_label=selected_label,
+        )
+
         self.body = self.fill = self.shadow = None
         self.style = style
 
         self._fill_color = _check_color(fill_color)
         self._outline_color = _check_color(outline_color)
-        self._label_color = label_color
-        self._label_font = label_font
+
         # Selecting inverts the button colors!
         self._selected_fill = _check_color(selected_fill)
         self._selected_outline = _check_color(selected_outline)
-        self._selected_label = _check_color(selected_label)
 
         if self.selected_fill is None and fill_color is not None:
             self.selected_fill = (~self._fill_color) & 0xFFFFFF
@@ -173,64 +165,17 @@ class Button(displayio.Group):
 
         self.label = label
 
-    @property
-    def label(self):
-        """The text label of the button"""
-        return self._label.text
-
-    @label.setter
-    def label(self, newtext):
-        if self._label and self and (self[-1] == self._label):
-            self.pop()
-
-        self._label = None
-        if not newtext or (self._label_color is None):  # no new text
-            return  # nothing to do!
-
-        if not self._label_font:
-            raise RuntimeError("Please provide label font")
-        self._label = Label(self._label_font, text=newtext)
-        dims = self._label.bounding_box
-        if dims[2] >= self.width or dims[3] >= self.height:
-            while len(self._label.text) > 1 and (
-                dims[2] >= self.width or dims[3] >= self.height
-            ):
-                self._label.text = "{}.".format(self._label.text[:-2])
-                dims = self._label.bounding_box
-            if len(self._label.text) <= 1:
-                raise RuntimeError("Button not large enough for label")
-        self._label.x = (self.width - dims[2]) // 2
-        self._label.y = self.height // 2
-        self._label.color = self._label_color
-        self.append(self._label)
-
-        if (self.selected_label is None) and (self._label_color is not None):
-            self.selected_label = (~self._label_color) & 0xFFFFFF
-
-    @property
-    def selected(self):
-        """Selected inverts the colors."""
-        return self._selected
-
-    @selected.setter
-    def selected(self, value):
-        if value == self._selected:
-            return  # bail now, nothing more to do
-        self._selected = value
+    def _subclass_selected_behavior(self, value):
         if self._selected:
             new_fill = self.selected_fill
             new_out = self.selected_outline
-            new_label = self.selected_label
         else:
             new_fill = self._fill_color
             new_out = self._outline_color
-            new_label = self._label_color
         # update all relevant colors!
         if self.body is not None:
             self.body.fill = new_fill
             self.body.outline = new_out
-        if self._label is not None:
-            self._label.color = new_label
 
     @property
     def group(self):
@@ -294,25 +239,6 @@ class Button(displayio.Group):
         self._selected_outline = _check_color(new_color)
         if self.selected:
             self.body.outline = self._selected_outline
-
-    @property
-    def selected_label(self):
-        """The font color of the button when selected"""
-        return self._selected_label
-
-    @selected_label.setter
-    def selected_label(self, new_color):
-        self._selected_label = _check_color(new_color)
-
-    @property
-    def label_color(self):
-        """The font color of the button"""
-        return self._label_color
-
-    @label_color.setter
-    def label_color(self, new_color):
-        self._label_color = _check_color(new_color)
-        self._label.color = self._label_color
 
     @property
     def width(self):

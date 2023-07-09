@@ -6,3 +6,12 @@
 
 .. automodule:: adafruit_button
    :members:
+
+.. automodule:: adafruit_button.button_base
+   :members:
+
+.. automodule:: adafruit_button.button
+   :members:
+
+.. automodule:: adafruit_button.sprite_button
+   :members:
