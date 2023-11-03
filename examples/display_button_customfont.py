@@ -42,7 +42,7 @@ DISPLAY_STRING = "Button Text"
 
 # Make the display context
 splash = displayio.Group()
-display.show(splash)
+display.root_group = splash
 BUTTON_WIDTH = 80
 BUTTON_HEIGHT = 40
 BUTTON_MARGIN = 20
