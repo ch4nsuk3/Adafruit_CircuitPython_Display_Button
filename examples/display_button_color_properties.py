@@ -41,7 +41,7 @@ ts = adafruit_touchscreen.Touchscreen(
 
 # Make the display context
 splash = displayio.Group()
-display.show(splash)
+display.root_group = splash
 
 # Make the button
 button = Button(

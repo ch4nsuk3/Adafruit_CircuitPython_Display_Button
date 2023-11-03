@@ -20,7 +20,7 @@ ts = adafruit_touchscreen.Touchscreen(
 
 # Make the display context
 main_group = displayio.Group()
-board.DISPLAY.show(main_group)
+board.DISPLAY.root_group = main_group
 
 BUTTON_WIDTH = 10 * 16
 BUTTON_HEIGHT = 3 * 16
