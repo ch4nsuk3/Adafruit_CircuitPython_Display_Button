@@ -130,7 +130,8 @@ class Button(ButtonBase):
         label_color=0x0,
         selected_fill=None,
         selected_outline=None,
-        selected_label=None
+        selected_label=None,
+        label_scale=None
     ):
         super().__init__(
             x=x,
@@ -142,6 +143,7 @@ class Button(ButtonBase):
             label_font=label_font,
             label_color=label_color,
             selected_label=selected_label,
+            label_scale=label_scale,
         )
 
         self.body = self.fill = self.shadow = None

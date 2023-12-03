@@ -58,7 +58,8 @@ class ButtonBase(Group):
         label=None,
         label_font=None,
         label_color=0x0,
-        selected_label=None
+        selected_label=None,
+        label_scale=None
     ):
         super().__init__(x=x, y=y)
         self.x = x
@@ -72,6 +73,7 @@ class ButtonBase(Group):
         self._label_color = label_color
         self._label_font = label_font
         self._selected_label = _check_color(selected_label)
+        self._label_scale = label_scale or 1
 
     @property
     def label(self):
@@ -89,14 +91,18 @@ class ButtonBase(Group):
 
         if not self._label_font:
             raise RuntimeError("Please provide label font")
-        self._label = Label(self._label_font, text=newtext)
-        dims = self._label.bounding_box
+        self._label = Label(self._label_font, text=newtext, scale=self._label_scale)
+        dims = list(self._label.bounding_box)
+        dims[2] *= self._label.scale
+        dims[3] *= self._label.scale
         if dims[2] >= self.width or dims[3] >= self.height:
             while len(self._label.text) > 1 and (
                 dims[2] >= self.width or dims[3] >= self.height
             ):
                 self._label.text = "{}.".format(self._label.text[:-2])
                 dims = self._label.bounding_box
+                dims[2] *= self._label.scale
+                dims[3] *= self._label.scale
             if len(self._label.text) <= 1:
                 raise RuntimeError("Button not large enough for label")
         self._label.x = (self.width - dims[2]) // 2
