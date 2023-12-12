@@ -72,7 +72,7 @@ class SpriteButton(ButtonBase):
             label_font=label_font,
             label_color=label_color,
             selected_label=selected_label,
-            label_scale=label_scale
+            label_scale=label_scale,
         )
 
         self._bmp, self._bmp_palette = load(bmp_path)
