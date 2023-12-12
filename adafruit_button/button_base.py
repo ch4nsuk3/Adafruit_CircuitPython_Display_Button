@@ -100,7 +100,7 @@ class ButtonBase(Group):
                 dims[2] >= self.width or dims[3] >= self.height
             ):
                 self._label.text = "{}.".format(self._label.text[:-2])
-                dims = self._label.bounding_box
+                dims = list(self._label.bounding_box)
                 dims[2] *= self._label.scale
                 dims[3] *= self._label.scale
             if len(self._label.text) <= 1:
