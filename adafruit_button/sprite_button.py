@@ -56,7 +56,8 @@ class SpriteButton(ButtonBase):
         selected_label=None,
         bmp_path=None,
         selected_bmp_path=None,
-        transparent_index=None
+        transparent_index=None,
+        label_scale=None
     ):
         if bmp_path is None:
             raise ValueError("Please supply bmp_path. It cannot be None.")
@@ -71,6 +72,7 @@ class SpriteButton(ButtonBase):
             label_font=label_font,
             label_color=label_color,
             selected_label=selected_label,
+            label_scale=label_scale,
         )
 
         self._bmp, self._bmp_palette = load(bmp_path)
