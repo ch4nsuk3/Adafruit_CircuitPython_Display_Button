@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: 2024 DJDevon3
+# SPDX-License-Identifier: MIT
 import time
 import displayio
 import terminalio
