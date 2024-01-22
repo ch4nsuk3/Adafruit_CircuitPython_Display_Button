@@ -1,12 +1,10 @@
+import time
 import displayio
 import terminalio
 import board
 import digitalio
-import time
 from adafruit_hx8357 import HX8357  # TFT Featherwing display driver
 import adafruit_stmpe610  # TFT Featherwing V1 touch driver
-from adafruit_display_text import label
-from adafruit_bitmap_font import bitmap_font
 from adafruit_button.sprite_button import SpriteButton
 
 # 3.5" TFT Featherwing is 480x320
@@ -65,7 +63,7 @@ while True:
         if button.contains(p):
             if not button.selected:
                 button.selected = True
-                time.sleep(0.25) # Wait a bit so we can see the button color change
+                time.sleep(0.25)  # Wait a bit so we can see the button color change
                 print("Button Pressed")
         else:
             button.selected = False  # When touch moves outside of button
