@@ -50,8 +50,8 @@ button = SpriteButton(
     label="MENU",
     label_font=terminalio.FONT,
     label_color=TEXT_WHITE,
-    bmp_path="icons/gradient_button_0.bmp",
-    selected_bmp_path="icons/gradient_button_1.bmp",
+    bmp_path="bmps/gradient_button_0.bmp",
+    selected_bmp_path="bmps/gradient_button_1.bmp",
     transparent_index=0,
 )
 
