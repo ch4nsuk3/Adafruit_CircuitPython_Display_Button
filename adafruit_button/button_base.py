@@ -78,7 +78,9 @@ class ButtonBase(Group):
     @property
     def label(self):
         """The text label of the button"""
-        return self._label.text
+        if self._label is not None and hasattr(self._label, "text"):
+            return self._label.text
+        return None
 
     @label.setter
     def label(self, newtext):
