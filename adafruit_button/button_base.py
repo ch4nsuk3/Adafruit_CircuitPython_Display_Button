@@ -24,7 +24,7 @@ from adafruit_display_text.bitmap_label import Label
 from displayio import Group
 import terminalio
 try:
-    from typing import Optional, Union, List, Tuple, Any
+    from typing import Optional, Union, Tuple, Any
     from fontio import FontProtocol
 except ImportError:
     pass
@@ -48,9 +48,10 @@ class ButtonBase(Group):
     :param int height: The height of the button in tiles.
     :param str name: A name, or miscellaneous string that is stored on the button.
     :param str label: The text that appears inside the button. Defaults to not displaying the label.
-    :param FontProtocol label_font: The button label font.
-    :param int label_color: The color of the button label text. Defaults to 0x0.
-    :param selected_label: The color of button label text when the button is selected.
+    :param FontProtocol label_font: The button label font. Defaults to terminalio.FONT
+    :param int|Tuple(int, int, int) label_color: The color of the button label text. Defaults to 0x0.
+    :param int|Tuple(int, int, int) selected_label: The color of button label text when the button is selected.
+    :param int label_scale: The scale factor used for the label. Defaults to 1.
     """
 
     def __init__(
@@ -127,7 +128,7 @@ class ButtonBase(Group):
 
     @property
     def selected(self) -> bool:
-        """Selected inverts the colors."""
+        """Returns whether the button is selected."""
         return self._selected
 
     @selected.setter
@@ -146,20 +147,21 @@ class ButtonBase(Group):
         self._subclass_selected_behavior(value)
 
     @property
-    def selected_label(self) -> int:
-        """The font color of the button when selected"""
+    def selected_label(self) -> Optional[Union[int, tuple[int, int, int]]]:
+        """The font color of the button when selected.
+        If no color is specified it defaults to the inverse of the label_color"""
         return self._selected_label
 
     @selected_label.setter
-    def selected_label(self, new_color: int) -> None:
+    def selected_label(self, new_color: Optional[Union[int, tuple[int, int, int]]]) -> None:
         self._selected_label = _check_color(new_color)
 
     @property
-    def label_color(self) -> int:
+    def label_color(self) -> Optional[Union[int, tuple[int, int, int]]]:
         """The font color of the button"""
         return self._label_color
 
     @label_color.setter
-    def label_color(self, new_color: int) -> None:
+    def label_color(self, new_color: Optional[Union[int, tuple[int, int, int]]]) -> None:
         self._label_color = _check_color(new_color)
         self._label.color = self._label_color
