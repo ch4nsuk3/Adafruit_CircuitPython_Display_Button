@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Tim Cocks for Adafruit Industries
+# SPDX-FileCopyrightText: 2024 Channing Ramos
 #
 # SPDX-License-Identifier: MIT
 
@@ -9,7 +10,7 @@
 UI Buttons for displayio
 
 
-* Author(s): Limor Fried
+* Author(s): Limor Fried, Channing Ramos
 
 Implementation Notes
 --------------------
@@ -47,10 +48,12 @@ class ButtonBase(Group):
     :param int width: The width of the button in tiles.
     :param int height: The height of the button in tiles.
     :param str name: A name, or miscellaneous string that is stored on the button.
-    :param str label: The text that appears inside the button. Defaults to not displaying the label.
-    :param FontProtocol label_font: The button label font. Defaults to terminalio.FONT
-    :param int|Tuple(int, int, int) label_color: The color of the button label text. Defaults to 0x0.
+    :param str label: The text that appears inside the button.
+    :param FontProtocol label_font: The button label font. Defaults to ''terminalio.FONT''
+    :param int|Tuple(int, int, int) label_color: The color of the button label text.
+    Accepts an int or a tuple of 3 integers representing RGB values.  Defaults to 0x0.
     :param int|Tuple(int, int, int) selected_label: The color of button label text when the button is selected.
+    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to an inverse of label_color.
     :param int label_scale: The scale factor used for the label. Defaults to 1.
     """
 
@@ -83,7 +86,7 @@ class ButtonBase(Group):
         self._label_scale = label_scale
 
     @property
-    def label(self) -> Optional[Tuple[str, str]]:
+    def label(self) -> Optional[str]:
         """The text label of the button"""
         return getattr(self._label, "text", None)
 

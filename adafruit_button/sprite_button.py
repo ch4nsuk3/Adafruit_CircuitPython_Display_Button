@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Tim Cocks for Adafruit Industries
+# SPDX-FileCopyrightText: 2024 Channing Ramos
 #
 # SPDX-License-Identifier: MIT
 
@@ -9,7 +10,7 @@
 Bitmap 3x3 Spritesheet based UI Button for displayio
 
 
-* Author(s): Tim Cocks
+* Author(s): Tim Cocks, Channing Ramos
 
 Implementation Notes
 --------------------
@@ -24,40 +25,51 @@ from adafruit_imageload.tilegrid_inflator import inflate_tilegrid
 from adafruit_imageload import load
 from adafruit_button.button_base import ButtonBase
 
+try:
+    from typing import Optional, Union, Tuple, Any, List
+    from fontio import FontProtocol
+except ImportError:
+    pass
 
 class SpriteButton(ButtonBase):
-    """Helper class for creating 3x3 Bitmap Spritesheet UI buttons for ``displayio``.
+    """Helper class for creating 3x3 Bitmap Spritesheet UI buttons for ``displayio``. Compatible with any format
+    supported by ''adafruit_imageload''.
 
-    :param x: The x position of the button.
-    :param y: The y position of the button.
-    :param width: The width of the button in tiles.
-    :param height: The height of the button in tiles.
-    :param name: A name, or miscellaneous string that is stored on the button.
-    :param label: The text that appears inside the button. Defaults to not displaying the label.
-    :param label_font: The button label font.
-    :param label_color: The color of the button label text. Defaults to 0x0.
-    :param selected_label: Text that appears when selected
-    :param string bmp_path: The path of the 3x3 spritesheet Bitmap file
-    :param string selected_bmp_path: The path of the 3x3 spritesheet Bitmap file to use when pressed
-    :param int or tuple transparent_index: Index(s) that will be made transparent on the Palette
+    :param int x: The x position of the button.
+    :param int y: The y position of the button.
+    :param int width: The width of the button in tiles.
+    :param int height: The height of the button in tiles.
+    :param Optional[str] name: A name, or miscellaneous string that is stored on the button.
+    :param Optional[str] label: The text that appears inside the button.
+    :param Optional[FontProtocol] label_font: The button label font.
+    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the button label text. Accepts either
+     an integer or a tuple of 3 integers representing RGB values. Defaults to 0x0.
+    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The color of the button label text when the button
+    is selected. Accepts either an integer or a tuple of 3 integers representing RGB values. Defaults to the inverse of
+    label_color.
+    :param str bmp_path: The path of the 3x3 spritesheet mage file
+    :param Optional[str] selected_bmp_path: The path of the 3x3 spritesheet image file to use when pressed
+    :param Optional[Union[int, Tuple]] transparent_index: Palette index(s) that will be set to transparent. PNG files have these index(s)
+    set automatically. Not compatible with JPG files.
+    :param Optional[int] label_scale: The scale multiplier of the button label. Defaults to 1.
     """
 
     def __init__(
         self,
         *,
-        x,
-        y,
-        width,
-        height,
-        name=None,
-        label=None,
-        label_font=None,
-        label_color=0x0,
-        selected_label=None,
-        bmp_path=None,
-        selected_bmp_path=None,
-        transparent_index=None,
-        label_scale=None
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        name: Optional[str] = None,
+        label: Optional[str] = None,
+        label_font: Optional[FontProtocol] = None,
+        label_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
+        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
+        bmp_path: str = None,
+        selected_bmp_path: Optional[str] = None,
+        transparent_index: Optional[Union[int, tuple]] = None,
+        label_scale: Optional[int] = 1
     ):
         if bmp_path is None:
             raise ValueError("Please supply bmp_path. It cannot be None.")
@@ -104,16 +116,16 @@ class SpriteButton(ButtonBase):
         self.label = label
 
     @property
-    def width(self):
-        """The width of the button"""
+    def width(self) -> int:
+        """The width of the button. Read-Only"""
         return self._width
 
     @property
-    def height(self):
-        """The height of the button"""
+    def height(self) -> int:
+        """The height of the button. Read-Only"""
         return self._height
 
-    def contains(self, point):
+    def contains(self, point: list[int]) -> bool:
         """Used to determine if a point is contained within a button. For example,
         ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
         determining that a button has been touched.
@@ -122,7 +134,7 @@ class SpriteButton(ButtonBase):
             self.y <= point[1] <= self.y + self.height
         )
 
-    def _subclass_selected_behavior(self, value):
+    def _subclass_selected_behavior(self, value: Optional[Any]) -> None:
         if self._selected:
             if self._selected_bmp is not None:
                 self._btn_tilegrid.bitmap = self._selected_bmp

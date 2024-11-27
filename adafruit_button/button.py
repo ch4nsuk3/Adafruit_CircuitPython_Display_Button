@@ -53,8 +53,8 @@ class Button(ButtonBase):
                   Defaults to RECT.
     :param int|Tuple(int, int, int) fill_color: The color to fill the button. Defaults to 0xFFFFFF.
     :param int|Tuple(int, int, int) outline_color: The color of the outline of the button.
-    :param str label: The text that appears inside the button. Defaults to not displaying the label.
-    :param FontProtocol label_font: The button label font. Defaults to terminalio.FONT
+    :param str label: The text that appears inside the button.
+    :param FontProtocol label_font: The button label font. Defaults to ''terminalio.FONT''
     :param int|Tuple(int, int, int) label_color: The color of the button label text. Defaults to 0x0.
     :param int|Tuple(int, int, int) selected_fill: The fill color when the button is selected.
     Defaults to the inverse of the fill_color.
