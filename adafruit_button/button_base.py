@@ -150,21 +150,21 @@ class ButtonBase(Group):
         self._subclass_selected_behavior(value)
 
     @property
-    def selected_label(self) -> Optional[Union[int, tuple[int, int, int]]]:
+    def selected_label(self) -> int:
         """The font color of the button when selected.
         If no color is specified it defaults to the inverse of the label_color"""
         return self._selected_label
 
     @selected_label.setter
-    def selected_label(self, new_color: Optional[Union[int, tuple[int, int, int]]]) -> None:
+    def selected_label(self, new_color: Union[int, tuple[int, int, int]]) -> None:
         self._selected_label = _check_color(new_color)
 
     @property
-    def label_color(self) -> Optional[Union[int, tuple[int, int, int]]]:
+    def label_color(self) -> int:
         """The font color of the button"""
         return self._label_color
 
     @label_color.setter
-    def label_color(self, new_color: Optional[Union[int, tuple[int, int, int]]]) -> None:
+    def label_color(self, new_color: Union[int, tuple[int, int, int]]) -> None:
         self._label_color = _check_color(new_color)
         self._label.color = self._label_color
