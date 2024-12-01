@@ -179,9 +179,9 @@ class Button(ButtonBase):
         self._selected_outline = _check_color(selected_outline)
 
         if self.selected_fill is None and fill_color is not None:
-            self.selected_fill = (~self._fill_color) & 0xFFFFFF
+            self.selected_fill = (~_check_color(self._fill_color)) & 0xFFFFFF
         if self.selected_outline is None and outline_color is not None:
-            self.selected_outline = (~self._outline_color) & 0xFFFFFF
+            self.selected_outline = (~_check_color(self._outline_color)) & 0xFFFFFF
 
         self._create_body()
         if self.body:

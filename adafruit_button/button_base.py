@@ -126,7 +126,7 @@ class ButtonBase(Group):
         self.append(self._label)
 
         if (self.selected_label is None) and (self._label_color is not None):
-            self.selected_label = (~self._label_color) & 0xFFFFFF
+            self.selected_label = (~_check_color(self._label_color)) & 0xFFFFFF
 
     def _subclass_selected_behavior(self, value: Optional[Any]) -> None:
         # Subclasses should override this!
