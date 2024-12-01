@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2019 Limor Fried for Adafruit Industries
+# SPDX-FileCopyrightText: 2024 Channing Ramos
 #
 # SPDX-License-Identifier: MIT
 
@@ -9,7 +10,7 @@
 UI Buttons for displayio
 
 
-* Author(s): Limor Fried
+* Author(s): Limor Fried, Channing Ramos
 
 Implementation Notes
 --------------------
