@@ -49,11 +49,13 @@ class ButtonBase(Group):
     :param int height: The height of the button in tiles.
     :param Optional[str] name: A name, or miscellaneous string that is stored on the button.
     :param Optional[str] label: The text that appears inside the button.
-    :param Optional[FontProtocol] label_font: The button label font. Defaults to ''terminalio.FONT''
-    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the button label text. Defaults to 0x0.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to an inverse of label_color.
-    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The color of button label text when the button is selected.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to an inverse of label_color.
+    :param Optional[FontProtocol] label_font: The button label font.
+     Defaults to ''terminalio.FONT''
+    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the label text.
+     Defaults to 0x0. Accepts an int or a tuple of 3 integers representing RGB values.
+    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The color of the label text
+     when the button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
+     Defaults to an inverse of label_color.
     :param Optional[int] label_scale: The scale factor used for the label. Defaults to 1.
     """
 
@@ -67,8 +69,8 @@ class ButtonBase(Group):
         name: Optional[str] = None,
         label: Optional[str] = None,
         label_font: Optional[FontProtocol] = None,
-        label_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
-        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
+        label_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
         label_scale: Optional[int] = 1,
     ) -> None:
         super().__init__(x=x, y=y)
@@ -156,7 +158,7 @@ class ButtonBase(Group):
         return self._selected_label
 
     @selected_label.setter
-    def selected_label(self, new_color: Union[int, tuple[int, int, int]]) -> None:
+    def selected_label(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._selected_label = _check_color(new_color)
 
     @property
@@ -165,6 +167,6 @@ class ButtonBase(Group):
         return self._label_color
 
     @label_color.setter
-    def label_color(self, new_color: Union[int, tuple[int, int, int]]) -> None:
+    def label_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._label_color = _check_color(new_color)
         self._label.color = self._label_color
