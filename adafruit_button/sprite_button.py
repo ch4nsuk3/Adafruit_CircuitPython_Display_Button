@@ -100,7 +100,7 @@ class SpriteButton(ButtonBase):
                     for _index in transparent_index:
                         self._selected_bmp_palette.make_transparent(_index)
                 elif isinstance(transparent_index, int):
-                    self._selected_bmp_palette.make_transparent(0)
+                    self._selected_bmp_palette.make_transparent(transparent_index)
 
         self._btn_tilegrid = inflate_tilegrid(
             bmp_obj=self._bmp,
