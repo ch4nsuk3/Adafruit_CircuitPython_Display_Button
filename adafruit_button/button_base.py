@@ -24,6 +24,7 @@ Implementation Notes
 from adafruit_display_text.bitmap_label import Label
 from displayio import Group
 import terminalio
+
 try:
     from typing import Optional, Union, Tuple, Any
     from fontio import FontProtocol

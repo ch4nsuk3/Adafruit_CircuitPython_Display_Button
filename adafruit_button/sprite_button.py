@@ -31,6 +31,7 @@ try:
 except ImportError:
     pass
 
+
 class SpriteButton(ButtonBase):
     """Helper class for creating 3x3 Bitmap Spritesheet UI buttons for ``displayio``.
     Compatible with any format supported by ''adafruit_imageload''.
