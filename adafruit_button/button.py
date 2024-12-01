@@ -294,8 +294,8 @@ class Button(ButtonBase):
 
     def resize(self, new_width: int, new_height: int) -> None:
         """Resize the button to the new width and height given
-        :param new_width int the desired width
-        :param new_height int the desired height
+        :param int new_width: The desired width in pixels.
+        :param int new_height: he desired height in pixels.
         """
         self._width = new_width
         self._height = new_height
