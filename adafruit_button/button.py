@@ -54,18 +54,21 @@ class Button(ButtonBase):
                   Defaults to RECT.
     :param Optional[Union[int, Tuple[int, int, int]]] fill_color: The color to fill the button.
     Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0xFFFFFF.
-    :param Optional[Union[int, Tuple[int, int, int]]] outline_color: The color of the outline of the button.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
+    :param Optional[Union[int, Tuple[int, int, int]]] outline_color: The color of the outline of the
+    button. Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
     :param Optional[str] label: The text that appears inside the button.
     :param Optional[FontProtocol] label_font: The button label font. Defaults to ''terminalio.FONT''
-    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the button label text.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
-    :param Optional[Union[int, Tuple[int, int, int]]] selected_fill: The fill color when the button is selected.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to the inverse of the fill_color.
-    :param Optional[Union[int, Tuple[int, int, int]]] selected_outline: The outline color when the button is selected.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to the inverse of outline_color.
-    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The label color when the button is selected.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to inverting the label_color.
+    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the button label
+    text. Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
+    :param Optional[Union[int, Tuple[int, int, int]]] selected_fill: The fill color when the
+    button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
+    Defaults to the inverse of the fill_color.
+    :param Optional[Union[int, Tuple[int, int, int]]] selected_outline: The outline color when the
+     button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
+     Defaults to the inverse of outline_color.
+    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The label color when the
+    button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
+    Defaults to inverting the label_color.
     :param Optional[int] label_scale: The scale factor used for the label. Defaults to 1.
     """
 
@@ -141,14 +144,14 @@ class Button(ButtonBase):
         height: int,
         name: Optional[str] = None,
         style = RECT,
-        fill_color: Optional[Union[int, tuple[int, int, int]]] = 0xFFFFFF,
-        outline_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
+        fill_color: Optional[Union[int, Tuple[int, int, int]]] = 0xFFFFFF,
+        outline_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
         label: Optional[str] = None,
         label_font: Optional[FontProtocol] = None,
-        label_color: Optional[Union[int, tuple[int, int , int]]] = 0x0,
-        selected_fill: Optional[Union[int, tuple[int, int , int]]] = None,
-        selected_outline: Optional[Union[int, tuple[int, int, int]]] = None,
-        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
+        label_color: Optional[Union[int, Tuple[int, int , int]]] = 0x0,
+        selected_fill: Optional[Union[int, Tuple[int, int , int]]] = None,
+        selected_outline: Optional[Union[int, Tuple[int, int, int]]] = None,
+        selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
         label_scale: Optional[int] = 1
     ):
         super().__init__(
@@ -222,7 +225,7 @@ class Button(ButtonBase):
         return self._fill_color
 
     @fill_color.setter
-    def fill_color(self, new_color: Union[int, tuple[int, int, int]]) -> None:
+    def fill_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._fill_color = _check_color(new_color)
         if not self.selected:
             self.body.fill = self._fill_color
@@ -233,7 +236,7 @@ class Button(ButtonBase):
         return self._outline_color
 
     @outline_color.setter
-    def outline_color(self, new_color: Union[int, tuple[int, int, int]]) -> None:
+    def outline_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._outline_color = _check_color(new_color)
         if not self.selected:
             self.body.outline = self._outline_color
@@ -244,7 +247,7 @@ class Button(ButtonBase):
         return self._selected_fill
 
     @selected_fill.setter
-    def selected_fill(self, new_color: Union[int, tuple[int, int, int]]) -> None:
+    def selected_fill(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._selected_fill = _check_color(new_color)
         if self.selected:
             self.body.fill = self._selected_fill
@@ -255,7 +258,7 @@ class Button(ButtonBase):
         return self._selected_outline
 
     @selected_outline.setter
-    def selected_outline(self, new_color: Union[int, tuple[int, int, int]]) -> None:
+    def selected_outline(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._selected_outline = _check_color(new_color)
         if self.selected:
             self.body.outline = self._selected_outline
