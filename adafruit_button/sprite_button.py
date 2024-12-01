@@ -32,8 +32,8 @@ except ImportError:
     pass
 
 class SpriteButton(ButtonBase):
-    """Helper class for creating 3x3 Bitmap Spritesheet UI buttons for ``displayio``. Compatible with any format
-    supported by ''adafruit_imageload''.
+    """Helper class for creating 3x3 Bitmap Spritesheet UI buttons for ``displayio``.
+    Compatible with any format supported by ''adafruit_imageload''.
 
     :param int x: The x position of the button.
     :param int y: The y position of the button.
@@ -42,15 +42,16 @@ class SpriteButton(ButtonBase):
     :param Optional[str] name: A name, or miscellaneous string that is stored on the button.
     :param Optional[str] label: The text that appears inside the button.
     :param Optional[FontProtocol] label_font: The button label font.
-    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the button label text. Accepts either
-     an integer or a tuple of 3 integers representing RGB values. Defaults to 0x0.
-    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The color of the button label text when the button
-    is selected. Accepts either an integer or a tuple of 3 integers representing RGB values. Defaults to the inverse of
-    label_color.
+    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the label text.
+     Accepts either an integer or a tuple of 3 integers representing RGB values. Defaults to 0x0.
+    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The color of the button label
+     text when the button is selected. Accepts either an integer or a tuple of 3 integers
+     representing RGB values. Defaults to the inverse of label_color.
     :param str bmp_path: The path of the 3x3 spritesheet mage file
-    :param Optional[str] selected_bmp_path: The path of the 3x3 spritesheet image file to use when pressed
-    :param Optional[Union[int, Tuple]] transparent_index: Palette index(s) that will be set to transparent. PNG files have these index(s)
-    set automatically. Not compatible with JPG files.
+    :param Optional[str] selected_bmp_path: The path of the 3x3 spritesheet image file to use when
+     pressed
+    :param Optional[Union[int, Tuple]] transparent_index: Palette index(s) that will be set to
+     transparent. PNG files have these index(s) set automatically. Not compatible with JPG files.
     :param Optional[int] label_scale: The scale multiplier of the button label. Defaults to 1.
     """
 
@@ -64,11 +65,11 @@ class SpriteButton(ButtonBase):
         name: Optional[str] = None,
         label: Optional[str] = None,
         label_font: Optional[FontProtocol] = None,
-        label_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
-        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
+        label_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
         bmp_path: str = None,
         selected_bmp_path: Optional[str] = None,
-        transparent_index: Optional[Union[int, tuple]] = None,
+        transparent_index: Optional[Union[int, Tuple]] = None,
         label_scale: Optional[int] = 1
     ):
         if bmp_path is None:
@@ -125,7 +126,7 @@ class SpriteButton(ButtonBase):
         """The height of the button. Read-Only"""
         return self._height
 
-    def contains(self, point: list[int]) -> bool:
+    def contains(self, point: List[int]) -> bool:
         """Used to determine if a point is contained within a button. For example,
         ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
         determining that a button has been touched.

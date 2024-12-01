@@ -53,22 +53,23 @@ class Button(ButtonBase):
     :param style: The style of the button. Can be RECT, ROUNDRECT, SHADOWRECT, SHADOWROUNDRECT.
                   Defaults to RECT.
     :param Optional[Union[int, Tuple[int, int, int]]] fill_color: The color to fill the button.
-    Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0xFFFFFF.
-    :param Optional[Union[int, Tuple[int, int, int]]] outline_color: The color of the outline of the
-    button. Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
+     Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0xFFFFFF.
+    :param Optional[Union[int, Tuple[int, int, int]]] outline_color: The color of the outline of
+     the button. Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
     :param Optional[str] label: The text that appears inside the button.
-    :param Optional[FontProtocol] label_font: The button label font. Defaults to ''terminalio.FONT''
+    :param Optional[FontProtocol] label_font: The button label font. Defaults to
+     ''terminalio.FONT''
     :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the button label
-    text. Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
+     text. Accepts an int or a tuple of 3 integers representing RGB values. Defaults to 0x0.
     :param Optional[Union[int, Tuple[int, int, int]]] selected_fill: The fill color when the
-    button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
-    Defaults to the inverse of the fill_color.
+     button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
+     Defaults to the inverse of the fill_color.
     :param Optional[Union[int, Tuple[int, int, int]]] selected_outline: The outline color when the
      button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
      Defaults to the inverse of outline_color.
     :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The label color when the
-    button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
-    Defaults to inverting the label_color.
+     button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
+     Defaults to inverting the label_color.
     :param Optional[int] label_scale: The scale factor used for the label. Defaults to 1.
     """
 
