@@ -1,12 +1,14 @@
 # SPDX-FileCopyrightText: 2024 DJDevon3
 # SPDX-License-Identifier: MIT
 import time
-import displayio
-import terminalio
+
+import adafruit_stmpe610  # TFT Featherwing V1 touch driver
 import board
 import digitalio
+import displayio
+import terminalio
 from adafruit_hx8357 import HX8357  # TFT Featherwing display driver
-import adafruit_stmpe610  # TFT Featherwing V1 touch driver
+
 from adafruit_button.sprite_button import SpriteButton
 
 # 3.5" TFT Featherwing is 480x320

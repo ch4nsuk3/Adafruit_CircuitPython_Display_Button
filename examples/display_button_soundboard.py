@@ -5,7 +5,9 @@ Soundboard example with buttons.
 """
 
 import time
+
 from adafruit_pyportal import PyPortal
+
 from adafruit_button import Button
 
 SHOW_BUTTONS = False

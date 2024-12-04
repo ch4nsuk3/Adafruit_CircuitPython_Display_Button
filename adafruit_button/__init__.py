@@ -20,4 +20,5 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 
 """
+
 from adafruit_button.button import Button

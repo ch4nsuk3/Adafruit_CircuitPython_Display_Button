@@ -21,15 +21,17 @@ Implementation Notes
 
 """
 
-from micropython import const
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_shapes.roundrect import RoundRect
+from micropython import const
+
 from adafruit_button.button_base import ButtonBase, _check_color
 
 try:
     from typing import Optional, Union
-    from fontio import FontProtocol
+
     from displayio import Group
+    from fontio import FontProtocol
 except ImportError:
     pass
 
@@ -38,7 +40,6 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Display_Button.gi
 
 
 class Button(ButtonBase):
-    # pylint: disable=too-many-instance-attributes, too-many-locals
     """Helper class for creating UI buttons for ``displayio``.
 
     :param x: The x position of the button.
@@ -84,9 +85,7 @@ class Button(ButtonBase):
                     outline=self._outline_color,
                 )
             elif self.style == Button.SHADOWRECT:
-                self.shadow = Rect(
-                    2, 2, self.width - 2, self.height - 2, fill=self.outline_color
-                )
+                self.shadow = Rect(2, 2, self.width - 2, self.height - 2, fill=self.outline_color)
                 self.body = Rect(
                     0,
                     0,
@@ -121,7 +120,7 @@ class Button(ButtonBase):
     SHADOWRECT = const(2)
     SHADOWROUNDRECT = const(3)
 
-    def __init__(
+    def __init__(  # noqa: PLR0913 Too many arguments
         self,
         *,
         x: int,
@@ -138,7 +137,7 @@ class Button(ButtonBase):
         selected_fill: Optional[Union[int, tuple[int, int, int]]] = None,
         selected_outline: Optional[Union[int, tuple[int, int, int]]] = None,
         selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
-        label_scale: Optional[int] = None
+        label_scale: Optional[int] = None,
     ) -> None:
         super().__init__(
             x=x,
