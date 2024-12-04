@@ -30,6 +30,7 @@ from adafruit_button.button_base import ButtonBase, _check_color
 try:
     from typing import Optional, Union, Tuple, Any, List
     from fontio import FontProtocol
+    from displayio import Group
 except ImportError:
     pass
 
@@ -189,7 +190,7 @@ class Button(ButtonBase):
 
         self.label = label
 
-    def _subclass_selected_behavior(self, value: Optional[Any]) -> None:
+    def _subclass_selected_behavior(self, value: bool) -> None:
         if self._selected:
             new_fill = self.selected_fill
             new_out = self.selected_outline
@@ -202,7 +203,7 @@ class Button(ButtonBase):
             self.body.outline = new_out
 
     @property
-    def group(self) -> "Button":
+    def group(self) -> Group:
         """Return self for compatibility with old API."""
         print(
             "Warning: The group property is being deprecated. "
@@ -211,7 +212,7 @@ class Button(ButtonBase):
         )
         return self
 
-    def contains(self, point: List[int]) -> bool:
+    def contains(self, point: tuple[int, int]) -> bool:
         """Used to determine if a point is contained within a button. For example,
         ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
         determining that a button has been touched.

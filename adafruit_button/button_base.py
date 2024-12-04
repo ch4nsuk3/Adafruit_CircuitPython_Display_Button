@@ -26,10 +26,11 @@ from displayio import Group
 import terminalio
 
 try:
-    from typing import Optional, Union, Tuple, Any
+    from typing import Optional, Union, Tuple
     from fontio import FontProtocol
 except ImportError:
     pass
+
 
 
 def _check_color(color: Optional[Union[int, tuple[int, int, int]]]) -> int:
@@ -128,7 +129,7 @@ class ButtonBase(Group):
         if (self.selected_label is None) and (self._label_color is not None):
             self.selected_label = (~_check_color(self._label_color)) & 0xFFFFFF
 
-    def _subclass_selected_behavior(self, value: Optional[Any]) -> None:
+    def _subclass_selected_behavior(self, value: bool):
         # Subclasses should override this!
         pass
 
