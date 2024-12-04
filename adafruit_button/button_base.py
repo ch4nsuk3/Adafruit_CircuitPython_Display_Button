@@ -1,4 +1,5 @@
 # SPDX-FileCopyrightText: 2022 Tim Cocks for Adafruit Industries
+# SPDX-FileCopyrightText: 2024 Channing Ramos
 #
 # SPDX-License-Identifier: MIT
 
@@ -9,7 +10,7 @@
 UI Buttons for displayio
 
 
-* Author(s): Limor Fried
+* Author(s): Limor Fried, Channing Ramos
 
 Implementation Notes
 --------------------
@@ -23,16 +24,16 @@ Implementation Notes
 
 from adafruit_display_text.bitmap_label import Label
 from displayio import Group
+import terminalio
 
 try:
-    from typing import Optional, Union
-
+    from typing import Optional, Union, Tuple
     from fontio import FontProtocol
 except ImportError:
     pass
 
 
-def _check_color(color):
+def _check_color(color: Optional[Union[int, tuple[int, int, int]]]) -> int:
     # if a tuple is supplied, convert it to a RGB number
     if isinstance(color, tuple):
         r, g, b = color
@@ -43,15 +44,20 @@ def _check_color(color):
 class ButtonBase(Group):
     """Superclass for creating UI buttons for ``displayio``.
 
-    :param x: The x position of the button.
-    :param y: The y position of the button.
-    :param width: The width of the button in tiles.
-    :param height: The height of the button in tiles.
-    :param name: A name, or miscellaneous string that is stored on the button.
-    :param label: The text that appears inside the button. Defaults to not displaying the label.
-    :param label_font: The button label font.
-    :param label_color: The color of the button label text. Defaults to 0x0.
-    :param selected_label: Text that appears when selected
+    :param int x: The x position of the button.
+    :param int y: The y position of the button.
+    :param int width: The width of the button in tiles.
+    :param int height: The height of the button in tiles.
+    :param Optional[str] name: A name, or miscellaneous string that is stored on the button.
+    :param Optional[str] label: The text that appears inside the button.
+    :param Optional[FontProtocol] label_font: The button label font.
+     Defaults to ''terminalio.FONT''
+    :param Optional[Union[int, Tuple[int, int, int]]] label_color: The color of the label text.
+     Defaults to 0x0. Accepts an int or a tuple of 3 integers representing RGB values.
+    :param Optional[Union[int, Tuple[int, int, int]]] selected_label: The color of the label text
+     when the button is selected. Accepts an int or a tuple of 3 integers representing RGB values.
+     Defaults to an inverse of label_color.
+    :param Optional[int] label_scale: The scale factor used for the label. Defaults to 1.
     """
 
     def __init__(  # noqa: PLR0913 Too many arguments
@@ -64,10 +70,10 @@ class ButtonBase(Group):
         name: Optional[str] = None,
         label: Optional[str] = None,
         label_font: Optional[FontProtocol] = None,
-        label_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
-        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
-        label_scale: Optional[int] = None,
-    ):
+        label_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
+        label_scale: Optional[int] = 1,
+    ) -> None:
         super().__init__(x=x, y=y)
         self.x = x
         self.y = y
@@ -77,13 +83,13 @@ class ButtonBase(Group):
         self._selected = False
         self.name = name
         self._label = label
-        self._label_color = label_color
+        self._label_color = _check_color(label_color)
         self._label_font = label_font
         self._selected_label = _check_color(selected_label)
-        self._label_scale = label_scale or 1
+        self._label_scale = label_scale
 
     @property
-    def label(self) -> str:
+    def label(self) -> Optional[str]:
         """The text label of the button"""
         return getattr(self._label, "text", None)
 
@@ -97,7 +103,7 @@ class ButtonBase(Group):
             return  # nothing to do!
 
         if not self._label_font:
-            raise RuntimeError("Please provide label font")
+            self._label_font = terminalio.FONT
         self._label = Label(self._label_font, text=newtext, scale=self._label_scale)
         dims = list(self._label.bounding_box)
         dims[2] *= self._label.scale
@@ -116,15 +122,15 @@ class ButtonBase(Group):
         self.append(self._label)
 
         if (self.selected_label is None) and (self._label_color is not None):
-            self.selected_label = (~self._label_color) & 0xFFFFFF
+            self.selected_label = (~_check_color(self._label_color)) & 0xFFFFFF
 
-    def _subclass_selected_behavior(self, value):
-        # Subclasses should overide this!
+    def _subclass_selected_behavior(self, value: bool):
+        # Subclasses should override this!
         pass
 
     @property
     def selected(self) -> bool:
-        """Selected inverts the colors."""
+        """Returns whether the button is selected."""
         return self._selected
 
     @selected.setter
@@ -144,11 +150,12 @@ class ButtonBase(Group):
 
     @property
     def selected_label(self) -> int:
-        """The font color of the button when selected"""
+        """The font color of the button when selected.
+        If no color is specified it defaults to the inverse of the label_color"""
         return self._selected_label
 
     @selected_label.setter
-    def selected_label(self, new_color: int) -> None:
+    def selected_label(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._selected_label = _check_color(new_color)
 
     @property
@@ -157,6 +164,6 @@ class ButtonBase(Group):
         return self._label_color
 
     @label_color.setter
-    def label_color(self, new_color: int):
+    def label_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._label_color = _check_color(new_color)
         self._label.color = self._label_color
