@@ -24,6 +24,12 @@ from adafruit_imageload.tilegrid_inflator import inflate_tilegrid
 from adafruit_imageload import load
 from adafruit_button.button_base import ButtonBase
 
+try:
+    from typing import Optional, Union, Tuple
+    from fontio import FontProtocol
+except ImportError:
+    pass
+
 
 class SpriteButton(ButtonBase):
     """Helper class for creating 3x3 Bitmap Spritesheet UI buttons for ``displayio``.
@@ -45,19 +51,19 @@ class SpriteButton(ButtonBase):
     def __init__(
         self,
         *,
-        x,
-        y,
-        width,
-        height,
-        name=None,
-        label=None,
-        label_font=None,
-        label_color=0x0,
-        selected_label=None,
-        bmp_path=None,
-        selected_bmp_path=None,
-        transparent_index=None,
-        label_scale=None
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        name: Optional[str] = None,
+        label: Optional[str] = None,
+        label_font: Optional[FontProtocol] = None,
+        label_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
+        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
+        bmp_path: Optional[str] = None,
+        selected_bmp_path: Optional[str] = None,
+        transparent_index: Optional[int] = None,
+        label_scale: Optional[int] = None
     ):
         if bmp_path is None:
             raise ValueError("Please supply bmp_path. It cannot be None.")
@@ -104,16 +110,16 @@ class SpriteButton(ButtonBase):
         self.label = label
 
     @property
-    def width(self):
+    def width(self) -> int:
         """The width of the button"""
         return self._width
 
     @property
-    def height(self):
+    def height(self) -> int:
         """The height of the button"""
         return self._height
 
-    def contains(self, point):
+    def contains(self, point: Tuple[int, int]):
         """Used to determine if a point is contained within a button. For example,
         ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
         determining that a button has been touched.
@@ -122,7 +128,7 @@ class SpriteButton(ButtonBase):
             self.y <= point[1] <= self.y + self.height
         )
 
-    def _subclass_selected_behavior(self, value):
+    def _subclass_selected_behavior(self, value: bool) -> None:
         if self._selected:
             if self._selected_bmp is not None:
                 self._btn_tilegrid.bitmap = self._selected_bmp

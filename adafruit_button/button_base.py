@@ -23,6 +23,12 @@ Implementation Notes
 from adafruit_display_text.bitmap_label import Label
 from displayio import Group
 
+try:
+    from typing import Optional, Union
+    from fontio import FontProtocol
+except ImportError:
+    pass
+
 
 def _check_color(color):
     # if a tuple is supplied, convert it to a RGB number
@@ -50,16 +56,16 @@ class ButtonBase(Group):
     def __init__(
         self,
         *,
-        x,
-        y,
-        width,
-        height,
-        name=None,
-        label=None,
-        label_font=None,
-        label_color=0x0,
-        selected_label=None,
-        label_scale=None
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        name: Optional[str] = None,
+        label: Optional[str] = None,
+        label_font: Optional[FontProtocol] = None,
+        label_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
+        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
+        label_scale: Optional[int] = None
     ):
         super().__init__(x=x, y=y)
         self.x = x
@@ -76,12 +82,12 @@ class ButtonBase(Group):
         self._label_scale = label_scale or 1
 
     @property
-    def label(self):
+    def label(self) -> str:
         """The text label of the button"""
         return getattr(self._label, "text", None)
 
     @label.setter
-    def label(self, newtext):
+    def label(self, newtext: str) -> None:
         if self._label and self and (self[-1] == self._label):
             self.pop()
 
@@ -120,12 +126,12 @@ class ButtonBase(Group):
         pass
 
     @property
-    def selected(self):
+    def selected(self) -> bool:
         """Selected inverts the colors."""
         return self._selected
 
     @selected.setter
-    def selected(self, value):
+    def selected(self, value: bool) -> None:
         if value == self._selected:
             return  # bail now, nothing more to do
         self._selected = value
@@ -140,20 +146,20 @@ class ButtonBase(Group):
         self._subclass_selected_behavior(value)
 
     @property
-    def selected_label(self):
+    def selected_label(self) -> int:
         """The font color of the button when selected"""
         return self._selected_label
 
     @selected_label.setter
-    def selected_label(self, new_color):
+    def selected_label(self, new_color: int) -> None:
         self._selected_label = _check_color(new_color)
 
     @property
-    def label_color(self):
+    def label_color(self) -> int:
         """The font color of the button"""
         return self._label_color
 
     @label_color.setter
-    def label_color(self, new_color):
+    def label_color(self, new_color: int):
         self._label_color = _check_color(new_color)
         self._label.color = self._label_color

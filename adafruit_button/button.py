@@ -26,6 +26,13 @@ from adafruit_display_shapes.rect import Rect
 from adafruit_display_shapes.roundrect import RoundRect
 from adafruit_button.button_base import ButtonBase, _check_color
 
+try:
+    from typing import Optional, Union
+    from fontio import FontProtocol
+    from displayio import Group
+except ImportError:
+    pass
+
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Display_Button.git"
 
@@ -117,22 +124,22 @@ class Button(ButtonBase):
     def __init__(
         self,
         *,
-        x,
-        y,
-        width,
-        height,
-        name=None,
-        style=RECT,
-        fill_color=0xFFFFFF,
-        outline_color=0x0,
-        label=None,
-        label_font=None,
-        label_color=0x0,
-        selected_fill=None,
-        selected_outline=None,
-        selected_label=None,
-        label_scale=None
-    ):
+        x: int,
+        y: int,
+        width: int,
+        height: int,
+        name: Optional[str] = None,
+        style: int = RECT,
+        fill_color: Optional[Union[int, tuple[int, int, int]]] = 0xFFFFFF,
+        outline_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
+        label: Optional[str] = None,
+        label_font: Optional[FontProtocol] = None,
+        label_color: Optional[Union[int, tuple[int, int, int]]] = 0x0,
+        selected_fill: Optional[Union[int, tuple[int, int, int]]] = None,
+        selected_outline: Optional[Union[int, tuple[int, int, int]]] = None,
+        selected_label: Optional[Union[int, tuple[int, int, int]]] = None,
+        label_scale: Optional[int] = None
+    ) -> None:
         super().__init__(
             x=x,
             y=y,
@@ -167,7 +174,7 @@ class Button(ButtonBase):
 
         self.label = label
 
-    def _subclass_selected_behavior(self, value):
+    def _subclass_selected_behavior(self, value: bool) -> None:
         if self._selected:
             new_fill = self.selected_fill
             new_out = self.selected_outline
@@ -180,7 +187,7 @@ class Button(ButtonBase):
             self.body.outline = new_out
 
     @property
-    def group(self):
+    def group(self) -> Group:
         """Return self for compatibility with old API."""
         print(
             "Warning: The group property is being deprecated. "
@@ -189,7 +196,7 @@ class Button(ButtonBase):
         )
         return self
 
-    def contains(self, point):
+    def contains(self, point: tuple[int, int]) -> bool:
         """Used to determine if a point is contained within a button. For example,
         ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
         determining that a button has been touched.
@@ -199,56 +206,56 @@ class Button(ButtonBase):
         )
 
     @property
-    def fill_color(self):
+    def fill_color(self) -> int:
         """The fill color of the button body"""
         return self._fill_color
 
     @fill_color.setter
-    def fill_color(self, new_color):
+    def fill_color(self, new_color: int) -> None:
         self._fill_color = _check_color(new_color)
         if not self.selected:
             self.body.fill = self._fill_color
 
     @property
-    def outline_color(self):
+    def outline_color(self) -> int:
         """The outline color of the button body"""
         return self._outline_color
 
     @outline_color.setter
-    def outline_color(self, new_color):
+    def outline_color(self, new_color: int) -> None:
         self._outline_color = _check_color(new_color)
         if not self.selected:
             self.body.outline = self._outline_color
 
     @property
-    def selected_fill(self):
+    def selected_fill(self) -> int:
         """The fill color of the button body when selected"""
         return self._selected_fill
 
     @selected_fill.setter
-    def selected_fill(self, new_color):
+    def selected_fill(self, new_color: int) -> None:
         self._selected_fill = _check_color(new_color)
         if self.selected:
             self.body.fill = self._selected_fill
 
     @property
-    def selected_outline(self):
+    def selected_outline(self) -> int:
         """The outline color of the button body when selected"""
         return self._selected_outline
 
     @selected_outline.setter
-    def selected_outline(self, new_color):
+    def selected_outline(self, new_color: int) -> None:
         self._selected_outline = _check_color(new_color)
         if self.selected:
             self.body.outline = self._selected_outline
 
     @property
-    def width(self):
+    def width(self) -> int:
         """The width of the button"""
         return self._width
 
     @width.setter
-    def width(self, new_width):
+    def width(self, new_width: int) -> None:
         self._width = new_width
         self._empty_self_group()
         self._create_body()
@@ -257,12 +264,12 @@ class Button(ButtonBase):
         self.label = self.label
 
     @property
-    def height(self):
+    def height(self) -> int:
         """The height of the button"""
         return self._height
 
     @height.setter
-    def height(self, new_height):
+    def height(self, new_height: int) -> None:
         self._height = new_height
         self._empty_self_group()
         self._create_body()
@@ -270,7 +277,7 @@ class Button(ButtonBase):
             self.append(self.body)
         self.label = self.label
 
-    def resize(self, new_width, new_height):
+    def resize(self, new_width: int, new_height: int) -> None:
         """Resize the button to the new width and height given
         :param new_width int the desired width
         :param new_height int the desired height
