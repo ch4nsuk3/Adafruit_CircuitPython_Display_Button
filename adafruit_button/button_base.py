@@ -81,7 +81,7 @@ class ButtonBase(Group):
         self._height = height
         self._font = label_font
         self._selected = False
-        self.name = name
+        self._name = name
         self._label = label
         self._label_color = _check_color(label_color)
         self._label_font = label_font
@@ -171,3 +171,12 @@ class ButtonBase(Group):
     def label_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
         self._label_color = _check_color(new_color)
         self._label.color = self._label_color
+
+    @property
+    def name(self) -> str:
+        """The name of the button"""
+        return self._name
+
+    @name.setter
+    def name(self, new_name: str) -> None:
+        self._name = new_name
