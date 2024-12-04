@@ -26,7 +26,7 @@ from adafruit_imageload import load
 from adafruit_button.button_base import ButtonBase
 
 try:
-    from typing import Optional, Union, Tuple, List
+    from typing import Optional, Union, Tuple
     from fontio import FontProtocol
 except ImportError:
     pass

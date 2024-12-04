@@ -32,7 +32,6 @@ except ImportError:
     pass
 
 
-
 def _check_color(color: Optional[Union[int, tuple[int, int, int]]]) -> int:
     # if a tuple is supplied, convert it to a RGB number
     if isinstance(color, tuple):

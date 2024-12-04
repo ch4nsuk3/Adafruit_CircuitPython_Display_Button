@@ -28,7 +28,7 @@ from adafruit_display_shapes.roundrect import RoundRect
 from adafruit_button.button_base import ButtonBase, _check_color
 
 try:
-    from typing import Optional, Union, Tuple, Any, List
+    from typing import Optional, Union, Tuple
     from fontio import FontProtocol
     from displayio import Group
 except ImportError:
