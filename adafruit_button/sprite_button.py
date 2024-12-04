@@ -74,7 +74,7 @@ class SpriteButton(ButtonBase):
         bmp_path: str = None,
         selected_bmp_path: Optional[str] = None,
         transparent_index: Optional[Union[int, Tuple]] = None,
-        label_scale: Optional[int] = 1
+        label_scale: Optional[int] = 1,
     ):
         if bmp_path is None:
             raise ValueError("Please supply bmp_path. It cannot be None.")

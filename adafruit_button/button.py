@@ -29,7 +29,8 @@ from micropython import const
 from adafruit_button.button_base import ButtonBase, _check_color
 
 try:
-    from typing import Optional, Union, Tuple
+    from typing import Optional, Tuple, Union
+
     from displayio import Group
     from fontio import FontProtocol
 except ImportError:

@@ -22,12 +22,13 @@ Implementation Notes
 
 """
 
+import terminalio
 from adafruit_display_text.bitmap_label import Label
 from displayio import Group
-import terminalio
 
 try:
-    from typing import Optional, Union, Tuple
+    from typing import Optional, Tuple, Union
+
     from fontio import FontProtocol
 except ImportError:
     pass
