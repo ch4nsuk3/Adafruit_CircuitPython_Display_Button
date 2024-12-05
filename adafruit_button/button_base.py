@@ -178,7 +178,7 @@ class ButtonBase(Group):
     def name(self, new_name: str) -> None:
         self._name = new_name
 
-    def contains(self, point: Union[tuple[int, int], List[int, int], List[Dict[str, int]]]) -> bool:
+    def contains(self, point: Union[tuple[int, int], List[int], List[Dict[str, int]]]) -> bool:
         """Used to determine if a point is contained within a button. For example,
         ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
         determining that a button has been touched.
