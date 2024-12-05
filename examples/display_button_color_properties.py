@@ -6,10 +6,11 @@ Basic example that illustrates how to set the various color options on the butto
 properties after the button has been initialized.
 """
 
+import adafruit_touchscreen
 import board
 import displayio
 import terminalio
-import adafruit_touchscreen
+
 from adafruit_button import Button
 
 # use built in display (MagTag, PyPortal, PyGamer, PyBadge, CLUE, etc.)

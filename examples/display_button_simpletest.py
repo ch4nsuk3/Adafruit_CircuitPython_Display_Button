@@ -4,10 +4,11 @@
 Simple button example.
 """
 
+import adafruit_touchscreen
 import board
 import displayio
 import terminalio
-import adafruit_touchscreen
+
 from adafruit_button import Button
 
 # use built in display (MagTag, PyPortal, PyGamer, PyBadge, CLUE, etc.)

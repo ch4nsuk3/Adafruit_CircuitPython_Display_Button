@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: 2022 Tim Cocks for Adafruit Industries
 # SPDX-License-Identifier: MIT
 import time
+
+import adafruit_touchscreen
 import board
 import displayio
-import adafruit_touchscreen
 import terminalio
+
 from adafruit_button.sprite_button import SpriteButton
 
 # These pins are used as both analog and digital! XL, XR and YU must be analog

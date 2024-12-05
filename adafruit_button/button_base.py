@@ -21,12 +21,14 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 
 """
+
+import terminalio
 from adafruit_display_text.bitmap_label import Label
 from displayio import Group
-import terminalio
 
 try:
-    from typing import Optional, Union, Tuple
+    from typing import Optional, Tuple, Union
+
     from fontio import FontProtocol
 except ImportError:
     pass
@@ -41,7 +43,6 @@ def _check_color(color: Optional[Union[int, tuple[int, int, int]]]) -> int:
 
 
 class ButtonBase(Group):
-    # pylint: disable=too-many-instance-attributes
     """Superclass for creating UI buttons for ``displayio``.
 
     :param int x: The x position of the button.
@@ -60,7 +61,7 @@ class ButtonBase(Group):
     :param Optional[int] label_scale: The scale factor used for the label. Defaults to 1.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913 Too many arguments
         self,
         *,
         x: int,
@@ -109,10 +110,8 @@ class ButtonBase(Group):
         dims[2] *= self._label.scale
         dims[3] *= self._label.scale
         if dims[2] >= self.width or dims[3] >= self.height:
-            while len(self._label.text) > 1 and (
-                dims[2] >= self.width or dims[3] >= self.height
-            ):
-                self._label.text = "{}.".format(self._label.text[:-2])
+            while len(self._label.text) > 1 and (dims[2] >= self.width or dims[3] >= self.height):
+                self._label.text = f"{self._label.text[:-2]}."
                 dims = list(self._label.bounding_box)
                 dims[2] *= self._label.scale
                 dims[3] *= self._label.scale
@@ -120,9 +119,7 @@ class ButtonBase(Group):
                 raise RuntimeError("Button not large enough for label")
         self._label.x = (self.width - dims[2]) // 2
         self._label.y = self.height // 2
-        self._label.color = (
-            self._label_color if not self.selected else self._selected_label
-        )
+        self._label.color = self._label_color if not self.selected else self._selected_label
         self.append(self._label)
 
         if (self.selected_label is None) and (self._label_color is not None):

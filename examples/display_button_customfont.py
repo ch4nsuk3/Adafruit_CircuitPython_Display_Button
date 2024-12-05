@@ -5,10 +5,12 @@ Button example with a custom font.
 """
 
 import os
+
+import adafruit_touchscreen
 import board
 import displayio
 from adafruit_bitmap_font import bitmap_font
-import adafruit_touchscreen
+
 from adafruit_button import Button
 
 # use built in display (MagTag, PyPortal, PyGamer, PyBadge, CLUE, etc.)

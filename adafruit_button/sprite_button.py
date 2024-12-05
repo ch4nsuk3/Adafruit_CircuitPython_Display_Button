@@ -21,12 +21,15 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 
 """
-from adafruit_imageload.tilegrid_inflator import inflate_tilegrid
+
 from adafruit_imageload import load
+from adafruit_imageload.tilegrid_inflator import inflate_tilegrid
+
 from adafruit_button.button_base import ButtonBase
 
 try:
-    from typing import Optional, Union, Tuple
+    from typing import Optional, Tuple, Union
+
     from fontio import FontProtocol
 except ImportError:
     pass
@@ -56,7 +59,7 @@ class SpriteButton(ButtonBase):
     :param Optional[int] label_scale: The scale multiplier of the button label. Defaults to 1.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913 Too many arguments
         self,
         *,
         x: int,
@@ -71,7 +74,7 @@ class SpriteButton(ButtonBase):
         bmp_path: str = None,
         selected_bmp_path: Optional[str] = None,
         transparent_index: Optional[Union[int, Tuple]] = None,
-        label_scale: Optional[int] = 1
+        label_scale: Optional[int] = 1,
     ):
         if bmp_path is None:
             raise ValueError("Please supply bmp_path. It cannot be None.")
