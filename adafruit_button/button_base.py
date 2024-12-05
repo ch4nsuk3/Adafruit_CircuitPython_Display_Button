@@ -27,7 +27,7 @@ from adafruit_display_text.bitmap_label import Label
 from displayio import Group
 
 try:
-    from typing import Optional, Tuple, Union
+    from typing import Dict, List, Optional, Tuple, Union
 
     from fontio import FontProtocol
 except ImportError:
@@ -177,3 +177,27 @@ class ButtonBase(Group):
     @name.setter
     def name(self, new_name: str) -> None:
         self._name = new_name
+
+    def contains(self, point: Union[tuple[int, int], List[int], List[Dict[str, int]]]) -> bool:
+        """Used to determine if a point is contained within a button. For example,
+        ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
+        determining that a button has been touched.
+        """
+        if isinstance(point, tuple) or (isinstance(point, list) and isinstance(point[0], int)):
+            return (self.x <= point[0] <= self.x + self.width) and (
+                self.y <= point[1] <= self.y + self.height
+            )
+        elif isinstance(point, list):
+            touch_points = point
+            if len(touch_points) == 0:
+                return False
+            for touch_point in touch_points:
+                if (
+                    isinstance(touch_point, dict)
+                    and "x" in touch_point.keys()
+                    and "y" in touch_point.keys()
+                ):
+                    if self.contains((touch_point["x"], touch_point["y"])):
+                        return True
+
+        return False

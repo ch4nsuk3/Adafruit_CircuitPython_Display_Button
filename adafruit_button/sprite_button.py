@@ -130,15 +130,6 @@ class SpriteButton(ButtonBase):
         """The height of the button. Read-Only"""
         return self._height
 
-    def contains(self, point: Tuple[int, int]) -> bool:
-        """Used to determine if a point is contained within a button. For example,
-        ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
-        determining that a button has been touched.
-        """
-        return (self.x <= point[0] <= self.x + self.width) and (
-            self.y <= point[1] <= self.y + self.height
-        )
-
     def _subclass_selected_behavior(self, value: bool) -> None:
         if self._selected:
             if self._selected_bmp is not None:

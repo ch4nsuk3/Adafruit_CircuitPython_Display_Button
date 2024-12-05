@@ -211,15 +211,6 @@ class Button(ButtonBase):
         )
         return self
 
-    def contains(self, point: tuple[int, int]) -> bool:
-        """Used to determine if a point is contained within a button. For example,
-        ``button.contains(touch)`` where ``touch`` is the touch point on the screen will allow for
-        determining that a button has been touched.
-        """
-        return (self.x <= point[0] <= self.x + self.width) and (
-            self.y <= point[1] <= self.y + self.height
-        )
-
     @property
     def fill_color(self) -> Optional[int]:
         """The fill color of the button body"""
