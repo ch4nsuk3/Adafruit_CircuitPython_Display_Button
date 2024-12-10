@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2022 Tim Cocks for Adafruit Industries
+# SPDX-FileCopyrightText: 2024 Tim Cocks for Adafruit Industries
 # SPDX-License-Identifier: MIT
 import time
 
@@ -8,6 +8,10 @@ import displayio
 import terminalio
 
 from adafruit_button.sprite_button import SpriteButton
+
+"""
+Sprite button debounced example
+"""
 
 # These pins are used as both analog and digital! XL, XR and YU must be analog
 # and digital capable. YD just need to be digital
@@ -52,19 +56,19 @@ for b in buttons:
 while True:
     p = ts.touch_point
     if p:
-        print(p)
         for i, b in enumerate(buttons):
             if b.contains(p):
-                print("Button %d pressed" % i)
-                b.selected = True
-                b.label = "pressed"
+                if not b.selected:
+                    print("Button %d pressed" % i)
+                    b.selected = True
+                    b.label = "pressed"
             else:
                 b.selected = False
-                b.label = "button0"
+                b.label = f"button{i}"
 
     else:
         for i, b in enumerate(buttons):
             if b.selected:
                 b.selected = False
-                b.label = "button0"
+                b.label = f"button{i}"
     time.sleep(0.01)

@@ -1,9 +1,7 @@
-# SPDX-FileCopyrightText: 2021 Tim Cocks for Adafruit Industries
+# SPDX-FileCopyrightText: 2024 Tim Cocks for Adafruit Industries
 # SPDX-License-Identifier: MIT
-
 """
-Basic example that illustrates how to set the various color options on the button using
-properties after the button has been initialized.
+Basic debounced button example.
 """
 
 import adafruit_touchscreen
@@ -24,8 +22,8 @@ BUTTON_Y = 95
 BUTTON_WIDTH = 100
 BUTTON_HEIGHT = 50
 BUTTON_STYLE = Button.ROUNDRECT
-BUTTON_FILL_COLOR = 0xAA0000
-BUTTON_OUTLINE_COLOR = 0x0000FF
+BUTTON_FILL_COLOR = 0x00FFFF
+BUTTON_OUTLINE_COLOR = 0xFF00FF
 BUTTON_LABEL = "HELLO WORLD"
 BUTTON_LABEL_COLOR = 0x000000
 # --| Button Config |-------------------------------------------------
@@ -53,19 +51,10 @@ button = Button(
     style=BUTTON_STYLE,
     fill_color=BUTTON_FILL_COLOR,
     outline_color=BUTTON_OUTLINE_COLOR,
-    label="HELLO WORLD",
+    label=BUTTON_LABEL,
     label_font=terminalio.FONT,
     label_color=BUTTON_LABEL_COLOR,
 )
-
-button.fill_color = 0x00FF00
-button.outline_color = 0xFF0000
-
-button.selected_fill = (0, 0, 255)
-button.selected_outline = (255, 0, 0)
-
-button.label_color = 0xFF0000
-button.selected_label = 0x00FF00
 
 # Add button to the display context
 splash.append(button)
@@ -75,7 +64,10 @@ while True:
     p = ts.touch_point
     if p:
         if button.contains(p):
-            print(p)
-            button.selected = True
+            if not button.selected:
+                button.selected = True
+                print("pressed")
+        else:
+            button.selected = False  # if touch is dragged outside of button
     else:
-        button.selected = False
+        button.selected = False  # if touch is released
