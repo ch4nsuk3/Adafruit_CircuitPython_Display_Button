@@ -51,6 +51,9 @@ except ImportError:
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Display_Button.git"
 
+def _calc_area(x0: int, y0: int, x1: int, y1: int, x2: int, y2: int):
+    area = abs((x0 * (y1 - y2) + x1 * (y2 - y0) + x2 * (y0 - y1)) / 2.0)
+    return area
 
 class TriangleButton(ButtonBase):
     # pylint: disable=too-many-instance-attributes, too-many-locals
@@ -232,3 +235,31 @@ class TriangleButton(ButtonBase):
         self._selected_outline = _check_color(new_color)
         if self.selected:
             self.body.outline = self._selected_outline
+
+    def contains(self, point: Union[Tuple[int, int], List[int], List[Dict[str, int]]]) -> bool:
+
+        if isinstance(point, tuple) or (isinstance(point, list) and isinstance(point[0], int)):
+            point_x = point[0]
+            point_y = point[1]
+
+            area = _calc_area(self.x0, self.y0, self.x1, self.y1, self.x2, self.y2)
+            area_pbc = _calc_area(point_x, point_y, self.x1, self.y1, self.x2, self.y2)
+            area_apc = _calc_area(self.x0, self.y0, point_x, point_y, self.x2, self.y2)
+            area_abp = _calc_area(self.x0, self.y0, self.x1, self.y1, point_x, point_y)
+
+            if area == area_pbc + area_apc + area_abp:
+                return True
+
+        # elif isinstance(point, list):
+        #     touch_points = point
+        #     if len(touch_points) == 0:
+        #         return False
+        #     for touch_point in touch_points:
+        #         if (
+        #             isinstance(touch_point, dict)
+        #             and "x" in touch_point.keys()
+        #             and "y" in touch_point.keys()
+        #         ):
+        #             point
+
+        return False
