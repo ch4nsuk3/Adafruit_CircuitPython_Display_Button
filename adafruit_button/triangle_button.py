@@ -19,6 +19,22 @@ Implementation Notes
 * Adafruit CircuitPython firmware for the supported boards:
   https://github.com/adafruit/circuitpython/releases
 
+    TODO:
+        implement _create_body: TRI
+        implement _create_body: TRISHADOW
+        implement _create_body: EQTRI
+        implement _create_body: EQTRISHADOW
+        implement easy option to make a button point north, south, east, or west
+        determine if changes need to be made to label positioning
+        implement a contains function that uses baryonic positioning to determine if a point is within the triangle
+        implement properties
+        review type annotations
+        documentation
+
+        implement properties
+
+
+
 """
 
 from micropython import const
@@ -27,6 +43,7 @@ from adafruit_button.button_base import ButtonBase, _check_color
 
 try:
     from typing import Optional, Union, Tuple, Any, List
+    from displayio import Group
     from fontio import FontProtocol
 except ImportError:
     pass
@@ -75,7 +92,7 @@ class TriangleButton(ButtonBase):
             self.pop()
 
     def _create_body(self) -> None:
-        if (self.outline_color is not None) or (self.fill_color is not None):
+        if (self._outline_color is not None) or (self._fill_color is not None):
             if self.style == TriangleButton.TRI:
                 self.body = Triangle(
                     self.x0,
@@ -84,45 +101,58 @@ class TriangleButton(ButtonBase):
                     self.y1,
                     self.x2,
                     self.y2,
-                    fill=self.fill_color,
-                    outline=self.outline_color
+                    fill=self._fill_color,
+                    outline=self._outline_color
                 )
 
     TRI = const(0)
     SHADOWTRI = const(1)
+    EQTRI = const(2)
+    EQTRISHADOW = const(3)
 
     def __init__(
         self,
-        x,
-        y,
-        x0,
-        y0,
-        x1,
-        y1,
-        x2,
-        y2,
-        name,
-        style,
-        fill_color,
-        outline_color,
-        label,
-        label_font,
-        label_color,
-        selected_fill,
-        selected_outline,
-        selected_label,
-        label_scale):
+        *,
+        x: int,
+        y: int,
+        x0: Optional[int],
+        y0: Optional[int],
+        x1: Optional[int],
+        y1: Optional[int],
+        x2: Optional[int],
+        y2: Optional[int],
+        name: Optional[str] = None,
+        style=TRI,
+        fill_color: Optional[Union[int, Tuple[int, int, int]]] = 0xFFFFFF,
+        outline_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        label: Optional[str] = None,
+        label_font: Optional[FontProtocol] = None,
+        label_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        selected_fill: Optional[Union[int, Tuple[int, int, int]]] = None,
+        selected_outline: Optional[Union[int, Tuple[int, int, int]]] = None,
+        selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
+        label_x_offset: Optional[int] = None,
+        label_y_offset: Optional[int] = None,
+        label_scale: Optional[int] = 1
+    ) -> None:
 
         #Find the height and width based off the provided points.
         #The Triangle class in adafruit_display_shapes has no height/width attributes
-        width = max[x0, x1, x2] - min[x0, x1, x2]
-        height = max[y0, y1, y2] - min[y0, y1, y2]
+        self.width = max(x0, x1, x2) - min(x0, x1, x2)
+        self.height = max(y0, y1, y2) - min(y0, y1, y2)
+
+        self.x0 = x0
+        self.y0 = y0
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
 
         super().__init__(
             x=x,
             y=y,
-            width=width,
-            height=height,
+            width=self.width,
+            height=self.height,
             name=name,
             label=label,
             label_font=label_font,
@@ -137,6 +167,7 @@ class TriangleButton(ButtonBase):
         self._fill_color = _check_color(fill_color)
         self._outline_color = _check_color(outline_color)
 
+        # Selecting inverts the button colors!
         self._selected_fill = _check_color(selected_fill)
         self._selected_outline = _check_color(selected_outline)
 
@@ -144,7 +175,6 @@ class TriangleButton(ButtonBase):
             self.selected_fill = (~_check_color(self._fill_color)) & 0xFFFFFF
         if self.selected_outline is None and outline_color is not None:
             self.selected_outline = (~_check_color(self._outline_color)) & 0xFFFFFF
-
         self._create_body()
         if self.body:
             self.append(self.body)
@@ -162,3 +192,43 @@ class TriangleButton(ButtonBase):
         if self.body is not None:
             self.body.fill = new_fill
             self.body.outline = new_out
+
+    @property
+    def fill_color(self) -> Optional[int]:
+        return self._fill_color
+
+    @fill_color.setter
+    def fill_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._fill_color = _check_color(new_color)
+        if not self.selected:
+            self.body.fill = self._fill_color
+
+    @property
+    def outline_color(self) -> Optional[int]:
+        return self._outline_color
+
+    @outline_color.setter
+    def outline_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._outline_color = _check_color(new_color)
+        if not self.selected:
+            self.body.outline = self._outline_color
+
+    @property
+    def selected_fill(self) -> Optional[int]:
+        return self._selected_fill
+
+    @selected_fill.setter
+    def selected_fill(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._selected_fill = _check_color(new_color)
+        if self.selected:
+            self.body.fill = self._selected_fill
+
+    @property
+    def selected_outline(self) -> Optional[int]:
+        return self._selected_outline
+
+    @selected_outline.setter
+    def selected_outline(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._selected_outline = _check_color(new_color)
+        if self.selected:
+            self.body.outline = self._selected_outline
