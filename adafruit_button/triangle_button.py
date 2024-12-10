@@ -20,25 +20,25 @@ Implementation Notes
   https://github.com/adafruit/circuitpython/releases
 
     TODO:
-        implement _create_body: TRI
-        implement _create_body: TRISHADOW
-        implement _create_body: EQTRI
-        implement _create_body: EQTRISHADOW
-        implement easy option to make a button point north, south, east, or west
+        DONE! --implement _create_body: TRI
+        NOPE! --implement _create_body: TRISHADOW
+        create subclass for equilateral triangles
+            implement _create_body: EQTRI
+            NOPE! --implement _create_body: EQTRISHADOW
+            implement easy option to make a button point north, south, east, or west
         determine if changes need to be made to label positioning
-        implement a contains function that uses baryonic positioning to determine if a point is within the triangle
-        implement properties
+        DONE! --hit detection
+        DONE! --implement properties
         review type annotations
         documentation
-
-        implement properties
 
 
 
 """
 
-from micropython import const
+import terminalio
 from adafruit_display_shapes.triangle import Triangle
+from adafruit_display_text.bitmap_label import Label
 from adafruit_button.button_base import ButtonBase, _check_color
 
 try:
@@ -96,22 +96,16 @@ class TriangleButton(ButtonBase):
 
     def _create_body(self) -> None:
         if (self._outline_color is not None) or (self._fill_color is not None):
-            if self.style == TriangleButton.TRI:
-                self.body = Triangle(
-                    self.x0,
-                    self.y0,
-                    self.x1,
-                    self.y1,
-                    self.x2,
-                    self.y2,
-                    fill=self._fill_color,
-                    outline=self._outline_color
-                )
-
-    TRI = const(0)
-    SHADOWTRI = const(1)
-    EQTRI = const(2)
-    EQTRISHADOW = const(3)
+            self.body = Triangle(
+                self.x0,
+                self.y0,
+                self.x1,
+                self.y1,
+                self.x2,
+                self.y2,
+                fill=self._fill_color,
+                outline=self._outline_color
+            )
 
     def __init__(
         self,
@@ -125,7 +119,6 @@ class TriangleButton(ButtonBase):
         x2: Optional[int],
         y2: Optional[int],
         name: Optional[str] = None,
-        style=TRI,
         fill_color: Optional[Union[int, Tuple[int, int, int]]] = 0xFFFFFF,
         outline_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
         label: Optional[str] = None,
@@ -165,7 +158,6 @@ class TriangleButton(ButtonBase):
         )
 
         self.body = self.fill = self.shadow = None
-        self.style = style
 
         self._fill_color = _check_color(fill_color)
         self._outline_color = _check_color(outline_color)
@@ -236,6 +228,32 @@ class TriangleButton(ButtonBase):
         if self.selected:
             self.body.outline = self._selected_outline
 
+    @property
+    def label(self) -> Optional[str]:
+        return getattr(self._label, "text", None)
+
+    @label.setter
+    def label(self, newtext: str) -> None:
+        if self._label and self and (self[-1] == self._label):
+            self.pop()
+
+        self._label = None
+        if not newtext or (self._label_color is None):
+            return
+
+        if not self._label_font:
+            self._label_font = terminalio.FONT
+        self._label = Label(self._label_font, text=newtext, scale=self._label_scale, anchor_point=(0.5, 0.5))
+
+        #Calculate the centroid of the triangle, then stick the label there.
+        self._label.x = (self.x0 + self.x1 + self.x2) // 3
+        self._label.y = (self.y0 + self.y1 + self.y2) // 3
+        self._label.color = self._label_color if not self.selected else self._selected_label
+        self.append(self._label)
+
+        if (self.selected_label is None) and (self._label_color is not None):
+            self.selected_label = (~_check_color(self._label_color)) & 0xFFFFFF
+
     def contains(self, point: Union[Tuple[int, int], List[int], List[Dict[str, int]]]) -> bool:
 
         if isinstance(point, tuple) or (isinstance(point, list) and isinstance(point[0], int)):
@@ -250,16 +268,25 @@ class TriangleButton(ButtonBase):
             if area == area_pbc + area_apc + area_abp:
                 return True
 
-        # elif isinstance(point, list):
-        #     touch_points = point
-        #     if len(touch_points) == 0:
-        #         return False
-        #     for touch_point in touch_points:
-        #         if (
-        #             isinstance(touch_point, dict)
-        #             and "x" in touch_point.keys()
-        #             and "y" in touch_point.keys()
-        #         ):
-        #             point
+        elif isinstance(point, list):
+            touch_points = point
+            if len(touch_points) == 0:
+                return False
+            for touch_point in touch_points:
+                if (
+                    isinstance(touch_point, dict)
+                    and "x" in touch_point.keys()
+                    and "y" in touch_point.keys()
+                ):
+                    point_x = touch_point["x"]
+                    point_y = touch_point["y"]
+
+                    area = _calc_area(self.x0, self.y0, self.x1, self.y1, self.x2, self.y2)
+                    area_pbc = _calc_area(point_x, point_y, self.x1, self.y1, self.x2, self.y2)
+                    area_apc = _calc_area(self.x0, self.y0, point_x, point_y, self.x2, self.y2)
+                    area_abp = _calc_area(self.x0, self.y0, self.x1, self.y1, point_x, point_y)
+
+                    if area == area_pbc + area_apc + area_abp:
+                        return True
 
         return False
