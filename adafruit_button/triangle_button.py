@@ -26,7 +26,7 @@ Implementation Notes
             implement _create_body: EQTRI
             NOPE! --implement _create_body: EQTRISHADOW
             implement easy option to make a button point north, south, east, or west
-        determine if changes need to be made to label positioning
+        DONE! --determine if changes need to be made to label positioning
         DONE! --hit detection
         DONE! --implement properties
         review type annotations
@@ -40,11 +40,11 @@ Implementation Notes
 import terminalio
 from adafruit_display_shapes.triangle import Triangle
 from adafruit_display_text.bitmap_label import Label
-from adafruit_button.button_base import ButtonBase, _check_color
+from adafruit_button.button_base import _check_color
+from adafruit_button.triangle_button_base import TriangleButtonBase
 
 try:
     from typing import Optional, Union, Tuple, Any, List
-    from displayio import Group
     from fontio import FontProtocol
 except ImportError:
     pass
@@ -52,11 +52,7 @@ except ImportError:
 __version__ = "0.0.0+auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Display_Button.git"
 
-def _calc_area(x0: int, y0: int, x1: int, y1: int, x2: int, y2: int):
-    area = abs((x0 * (y1 - y2) + x1 * (y2 - y0) + x2 * (y0 - y1)) / 2.0)
-    return area
-
-class TriangleButton(ButtonBase):
+class TriangleButton(TriangleButtonBase):
     # pylint: disable=too-many-instance-attributes, too-many-locals
     """Helper class for creating UI buttons for ``displayio``. Provides the following
     buttons:
@@ -98,12 +94,12 @@ class TriangleButton(ButtonBase):
     def _create_body(self) -> None:
         if (self._outline_color is not None) or (self._fill_color is not None):
             self.body = Triangle(
-                self.x0,
-                self.y0,
-                self.x1,
-                self.y1,
-                self.x2,
-                self.y2,
+                self._x0,
+                self._y0,
+                self._x1,
+                self._y1,
+                self._x2,
+                self._y2,
                 fill=self._fill_color,
                 outline=self._outline_color
             )
@@ -133,30 +129,22 @@ class TriangleButton(ButtonBase):
         label_scale: Optional[int] = 1
     ) -> None:
 
-        #Find the height and width based off the provided points.
-        #The Triangle class in adafruit_display_shapes has no height/width attributes
-        self.width = max(x0, x1, x2) - min(x0, x1, x2)
-        self.height = max(y0, y1, y2) - min(y0, y1, y2)
-
-        self.x0 = x0
-        self.y0 = y0
-        self.x1 = x1
-        self.y1 = y1
-        self.x2 = x2
-        self.y2 = y2
-        self.label_x_offset = label_x_offset
-        self.label_y_offset = label_y_offset
-
         super().__init__(
             x=x,
             y=y,
-            width=self.width,
-            height=self.height,
+            x0=x0,
+            y0=y0,
+            x1=x1,
+            y1=y1,
+            x2=x2,
+            y2=y2,
             name=name,
             label=label,
             label_font=label_font,
             label_color=label_color,
             selected_label=selected_label,
+            label_x_offset=label_x_offset,
+            label_y_offset=label_y_offset,
             label_scale=label_scale,
         )
 
@@ -230,70 +218,3 @@ class TriangleButton(ButtonBase):
         self._selected_outline = _check_color(new_color)
         if self.selected:
             self.body.outline = self._selected_outline
-
-    @property
-    def label(self) -> Optional[str]:
-        return getattr(self._label, "text", None)
-
-    @label.setter
-    def label(self, newtext: str) -> None:
-        if self._label and self and (self[-1] == self._label):
-            self.pop()
-
-        self._label = None
-        if not newtext or (self._label_color is None):
-            return
-
-        if not self._label_font:
-            self._label_font = terminalio.FONT
-        self._label = Label(self._label_font, text=newtext, scale=self._label_scale, anchor_point=(0.5, 0.5))
-
-
-        #Calculate the centroid of the triangle, then stick the label there.
-        #If offsets were provided this is where they get applied.
-        x_point = ((self.x0 + self.x1 + self.x2) // 3) + self.label_x_offset
-        y_point = ((self.y0 + self.y1 + self.y2) // 3) + self.label_y_offset
-        self._label.anchored_position = (x_point, y_point)
-
-        self._label.color = self._label_color if not self.selected else self._selected_label
-        self.append(self._label)
-
-        if (self.selected_label is None) and (self._label_color is not None):
-            self.selected_label = (~_check_color(self._label_color)) & 0xFFFFFF
-
-    def contains(self, point: Union[Tuple[int, int], List[int], List[Dict[str, int]]]) -> bool:
-
-        if isinstance(point, tuple) or (isinstance(point, list) and isinstance(point[0], int)):
-            point_x = point[0]
-            point_y = point[1]
-
-            area = _calc_area(self.x0, self.y0, self.x1, self.y1, self.x2, self.y2)
-            area_pbc = _calc_area(point_x, point_y, self.x1, self.y1, self.x2, self.y2)
-            area_apc = _calc_area(self.x0, self.y0, point_x, point_y, self.x2, self.y2)
-            area_abp = _calc_area(self.x0, self.y0, self.x1, self.y1, point_x, point_y)
-
-            if area == area_pbc + area_apc + area_abp:
-                return True
-
-        elif isinstance(point, list):
-            touch_points = point
-            if len(touch_points) == 0:
-                return False
-            for touch_point in touch_points:
-                if (
-                    isinstance(touch_point, dict)
-                    and "x" in touch_point.keys()
-                    and "y" in touch_point.keys()
-                ):
-                    point_x = touch_point["x"]
-                    point_y = touch_point["y"]
-
-                    area = _calc_area(self.x0, self.y0, self.x1, self.y1, self.x2, self.y2)
-                    area_pbc = _calc_area(point_x, point_y, self.x1, self.y1, self.x2, self.y2)
-                    area_apc = _calc_area(self.x0, self.y0, point_x, point_y, self.x2, self.y2)
-                    area_abp = _calc_area(self.x0, self.y0, self.x1, self.y1, point_x, point_y)
-
-                    if area == area_pbc + area_apc + area_abp:
-                        return True
-
-        return False
