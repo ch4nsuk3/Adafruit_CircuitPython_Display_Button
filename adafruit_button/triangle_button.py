@@ -30,6 +30,7 @@ Implementation Notes
         DONE! --hit detection
         DONE! --implement properties
         review type annotations
+        check if functions or variables can be set to private with a leading _
         documentation
 
 
@@ -127,8 +128,8 @@ class TriangleButton(ButtonBase):
         selected_fill: Optional[Union[int, Tuple[int, int, int]]] = None,
         selected_outline: Optional[Union[int, Tuple[int, int, int]]] = None,
         selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
-        label_x_offset: Optional[int] = None,
-        label_y_offset: Optional[int] = None,
+        label_x_offset: Optional[int] = 0,
+        label_y_offset: Optional[int] = 0,
         label_scale: Optional[int] = 1
     ) -> None:
 
@@ -143,6 +144,8 @@ class TriangleButton(ButtonBase):
         self.y1 = y1
         self.x2 = x2
         self.y2 = y2
+        self.label_x_offset = label_x_offset
+        self.label_y_offset = label_y_offset
 
         super().__init__(
             x=x,
@@ -245,9 +248,13 @@ class TriangleButton(ButtonBase):
             self._label_font = terminalio.FONT
         self._label = Label(self._label_font, text=newtext, scale=self._label_scale, anchor_point=(0.5, 0.5))
 
+
         #Calculate the centroid of the triangle, then stick the label there.
-        self._label.x = (self.x0 + self.x1 + self.x2) // 3
-        self._label.y = (self.y0 + self.y1 + self.y2) // 3
+        #If offsets were provided this is where they get applied.
+        x_point = ((self.x0 + self.x1 + self.x2) // 3) + self.label_x_offset
+        y_point = ((self.y0 + self.y1 + self.y2) // 3) + self.label_y_offset
+        self._label.anchored_position = (x_point, y_point)
+
         self._label.color = self._label_color if not self.selected else self._selected_label
         self.append(self._label)
 
