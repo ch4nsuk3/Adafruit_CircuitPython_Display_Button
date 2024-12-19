@@ -87,23 +87,6 @@ class TriangleButton(TriangleButtonBase):
     :param Optional[int] label_scale: The scale factor used for the label. Defaults to 1.
     """
 
-    def _empty_self_group(self) -> None:
-        while len(self) > 0:
-            self.pop()
-
-    def _create_body(self) -> None:
-        if (self._outline_color is not None) or (self._fill_color is not None):
-            self.body = Triangle(
-                self._x0,
-                self._y0,
-                self._x1,
-                self._y1,
-                self._x2,
-                self._y2,
-                fill=self._fill_color,
-                outline=self._outline_color
-            )
-
     def __init__(
         self,
         *,
@@ -140,32 +123,17 @@ class TriangleButton(TriangleButtonBase):
             y2=y2,
             name=name,
             label=label,
+            fill_color=fill_color,
+            outline_color=outline_color,
             label_font=label_font,
             label_color=label_color,
+            selected_fill=selected_fill,
+            selected_outline=selected_outline,
             selected_label=selected_label,
             label_x_offset=label_x_offset,
             label_y_offset=label_y_offset,
             label_scale=label_scale,
         )
-
-        self.body = self.fill = self.shadow = None
-
-        self._fill_color = _check_color(fill_color)
-        self._outline_color = _check_color(outline_color)
-
-        # Selecting inverts the button colors!
-        self._selected_fill = _check_color(selected_fill)
-        self._selected_outline = _check_color(selected_outline)
-
-        if self.selected_fill is None and fill_color is not None:
-            self.selected_fill = (~_check_color(self._fill_color)) & 0xFFFFFF
-        if self.selected_outline is None and outline_color is not None:
-            self.selected_outline = (~_check_color(self._outline_color)) & 0xFFFFFF
-        self._create_body()
-        if self.body:
-            self.append(self.body)
-
-        self.label = label
 
     def _subclass_selected_behavior(self, value):
         if self._selected:
@@ -179,42 +147,49 @@ class TriangleButton(TriangleButtonBase):
             self.body.fill = new_fill
             self.body.outline = new_out
 
-    @property
-    def fill_color(self) -> Optional[int]:
-        return self._fill_color
+class TriangleButtonBH(TriangleButtonBase):
 
-    @fill_color.setter
-    def fill_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
-        self._fill_color = _check_color(new_color)
-        if not self.selected:
-            self.body.fill = self._fill_color
+    #Constants to hold the directions the arrow can face
+    NORTH = const(0)
+    EAST = const(1)
+    SOUTH = const(2)
+    WEST = const(3)
+    
+    def _calculate_points(self, base, height) -> List:
+        points = []
+        if self.style == TriangleButtonBH.NORTH:
+            #Calculate the top vertex
+            x0 = base // 2
+            y0 = 0
+            #Lower right vertex
+            x1 = base
+            y1 = height
+            #Lower left vertex
+            x2 = 0
 
-    @property
-    def outline_color(self) -> Optional[int]:
-        return self._outline_color
 
-    @outline_color.setter
-    def outline_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
-        self._outline_color = _check_color(new_color)
-        if not self.selected:
-            self.body.outline = self._outline_color
 
-    @property
-    def selected_fill(self) -> Optional[int]:
-        return self._selected_fill
+    def __init__(
+        self,
+        *,
+        x: int,
+        y: int,
+        base: int,
+        height: int,
+        direction=NORTH,
+        name: Optional[str] = None,
+        fill_color: Optional[Union[int, Tuple[int, int, int]]] = 0xFFFFFF,
+        outline_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        label: Optional[str] = None,
+        label_font: Optional[FontProtocol] = None,
+        label_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        selected_fill: Optional[Union[int, Tuple[int, int, int]]] = None,
+        selected_outline: Optional[Union[int, Tuple[int, int, int]]] = None,
+        selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
+        label_x_offset: Optional[int] = 0,
+        label_y_offset: Optional[int] = 0,
+        label_scale: Optional[int] = 1
+    ) -> None:
 
-    @selected_fill.setter
-    def selected_fill(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
-        self._selected_fill = _check_color(new_color)
-        if self.selected:
-            self.body.fill = self._selected_fill
-
-    @property
-    def selected_outline(self) -> Optional[int]:
-        return self._selected_outline
-
-    @selected_outline.setter
-    def selected_outline(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
-        self._selected_outline = _check_color(new_color)
-        if self.selected:
-            self.body.outline = self._selected_outline
+        self._base = base
+        self._height = height

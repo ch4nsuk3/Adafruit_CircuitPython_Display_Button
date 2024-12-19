@@ -35,6 +35,7 @@ Implementation Notes
 import terminalio
 from adafruit_display_text.bitmap_label import Label
 from adafruit_button.button_base import _check_color
+from adafruit_display_shapes.triangle import Triangle
 from displayio import Group
 
 try:
@@ -49,6 +50,23 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_Display_Button.gi
 def _calc_area(x0: int, y0: int, x1: int, y1: int, x2: int, y2: int):
     area = abs((x0 * (y1 - y2) + x1 * (y2 - y0) + x2 * (y0 - y1)) / 2.0)
     return area
+
+def _empty_self_group(self) -> None:
+    while len(self) > 0:
+        self.pop()
+
+# def _create_body(self) -> None:
+#     if (self._outline_color is not None) or (self._fill_color is not None):
+#         self.body = Triangle(
+#             self._x0,
+#             self._y0,
+#             self._x1,
+#             self._y1,
+#             self._x2,
+#             self._y2,
+#             fill=self._fill_color,
+#             outline=self._outline_color
+#         )
 
 class TriangleButtonBase(Group):
     # pylint: disable=too-many-instance-attributes, too-many-locals
@@ -97,9 +115,13 @@ class TriangleButtonBase(Group):
         x2: int,
         y2: int,
         name: Optional[str] = None,
+        fill_color: Optional[Union[int, Tuple[int, int, int]]] = 0xFFFFFF,
+        outline_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
         label: Optional[str] = None,
         label_font: Optional[FontProtocol] = None,
         label_color: Optional[Union[int, Tuple[int, int, int]]] = 0x0,
+        selected_fill: Optional[Union[int, Tuple[int, int, int]]] = None,
+        selected_outline: Optional[Union[int, Tuple[int, int, int]]] = None,
         selected_label: Optional[Union[int, Tuple[int, int, int]]] = None,
         label_x_offset: Optional[int] = 0,
         label_y_offset: Optional[int] = 0,
@@ -107,6 +129,8 @@ class TriangleButtonBase(Group):
     ) -> None:
 
         super().__init__(x=x, y=y)
+
+        self._label = None
 
         #Find the height and width based off the provided points.
         #The Triangle class in adafruit_display_shapes has no height/width attributes
@@ -124,12 +148,42 @@ class TriangleButtonBase(Group):
         self.label_x_offset = label_x_offset
         self.label_y_offset = label_y_offset
         self._name = name
-        self._label = label
         self._label_font = label_font
         self._label_color = _check_color(label_color)
         self._selected_label = _check_color(selected_label)
         self._label_scale = label_scale
 
+        self.body = self.fill = self.shadow = None
+
+        self._fill_color = _check_color(fill_color)
+        self._outline_color = _check_color(outline_color)
+
+        # Selecting inverts the button colors!
+        self._selected_fill = _check_color(selected_fill)
+        self._selected_outline = _check_color(selected_outline)
+
+        if self.selected_fill is None and fill_color is not None:
+            self.selected_fill = (~_check_color(self._fill_color)) & 0xFFFFFF
+        if self.selected_outline is None and outline_color is not None:
+            self.selected_outline = (~_check_color(self._outline_color)) & 0xFFFFFF
+        self._create_body()
+        if self.body:
+            self.append(self.body)
+
+        self.label = label
+
+    def _create_body(self) -> None:
+        if (self._outline_color is not None) or (self._fill_color is not None):
+            self.body = Triangle(
+                self._x0,
+                self._y0,
+                self._x1,
+                self._y1,
+                self._x2,
+                self._y2,
+                fill=self._fill_color,
+                outline=self._outline_color
+            )
 
     def _subclass_selected_behavior(self, value):
         pass
@@ -198,6 +252,46 @@ class TriangleButtonBase(Group):
     def label_color(self, new_color: Union[int, Tuple[int, int, int]]):
         self._label_color = _check_color(new_color)
         self._label.color = self._label_color
+
+    @property
+    def fill_color(self) -> Optional[int]:
+        return self._fill_color
+
+    @fill_color.setter
+    def fill_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._fill_color = _check_color(new_color)
+        if not self.selected:
+            self.body.fill = self._fill_color
+
+    @property
+    def outline_color(self) -> Optional[int]:
+        return self._outline_color
+
+    @outline_color.setter
+    def outline_color(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._outline_color = _check_color(new_color)
+        if not self.selected:
+            self.body.outline = self._outline_color
+
+    @property
+    def selected_fill(self) -> Optional[int]:
+        return self._selected_fill
+
+    @selected_fill.setter
+    def selected_fill(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._selected_fill = _check_color(new_color)
+        if self.selected:
+            self.body.fill = self._selected_fill
+
+    @property
+    def selected_outline(self) -> Optional[int]:
+        return self._selected_outline
+
+    @selected_outline.setter
+    def selected_outline(self, new_color: Union[int, Tuple[int, int, int]]) -> None:
+        self._selected_outline = _check_color(new_color)
+        if self.selected:
+            self.body.outline = self._selected_outline
 
     @property
     def name(self) -> str:
